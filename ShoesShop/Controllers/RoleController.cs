@@ -4,6 +4,8 @@ using ShoesShop.Application.Interfaces;
 
 namespace ShoesShop.Controllers
 {
+    [Route("api/[controller]")]
+    [ApiController]
     public class RoleController : Controller
     {
         private readonly IRoleService _roleService;
