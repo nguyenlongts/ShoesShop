@@ -1,4 +1,5 @@
-﻿using API_ShoesShop.Application.DTOs;
+﻿using System.IdentityModel.Tokens.Jwt;
+using API_ShoesShop.Application.DTOs;
 using API_ShoesShop.Application.Services;
 using API_ShoesShop.Domain.Entities;
 using API_ShoesShop.Infrastructure.DBContext;
@@ -60,7 +61,15 @@ namespace API_ShoesShop.Controllers
                 return Unauthorized("Invalid password");
             }
             var token = await _tokenService.GenerateToken(user);
-            return Ok(new { Token = token });
+            var handler = new JwtSecurityTokenHandler();
+            var jwtToken = handler.ReadJwtToken(token);
+            var expireTime = DateTimeOffset.FromUnixTimeSeconds(long.Parse(jwtToken.Claims.First(c => c.Type == JwtRegisteredClaimNames.Exp).Value)).UtcDateTime;
+            var response = new LoginResponse
+            {
+                ExpireTime = expireTime.ToString("yyyy-MM-dd HH:mm:ss"),
+                Token = token
+            };
+            return Ok(response);
         }
     }
 }
