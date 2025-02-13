@@ -3,6 +3,6 @@
     public class LoginResponse
     {
         public string Token { get; set; }
-        public DateTime ExpireTime { get; set; }
+        public string ExpireTime { get; set; }
     }
 }
