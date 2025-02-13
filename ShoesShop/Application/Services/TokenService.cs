@@ -22,20 +22,23 @@ namespace API_ShoesShop.Application.Services
             var roles = await _userManager.GetRolesAsync(user);
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Key"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            var expireTime = DateTimeOffset.UtcNow.AddHours(3).ToUnixTimeSeconds();
             var claims = new List<Claim>
             {
                 new Claim(JwtRegisteredClaimNames.Sub,user.Id),
                 new Claim(JwtRegisteredClaimNames.UniqueName,user.UserName),
+                new Claim(JwtRegisteredClaimNames.Exp,expireTime.ToString("yyyy-MM-dd HH:mm:ss")),
+                new Claim("email_confirm",user.EmailConfirmed.ToString())
             };
             foreach (var role in roles)
             {
-                claims.Add(new Claim(ClaimTypes.Role, role));
+                claims.Add(new Claim("role", role));
             }
             var token = new JwtSecurityToken(
                 _configuration["Jwt:Issuer"],
                 _configuration["Jwt:Audience"],
                 claims,
-                expires: DateTime.UtcNow.AddHours(3),
+                expires: DateTimeOffset.FromUnixTimeSeconds(expireTime).UtcDateTime,
                 signingCredentials: creds
                 );
             return new JwtSecurityTokenHandler().WriteToken(token);
