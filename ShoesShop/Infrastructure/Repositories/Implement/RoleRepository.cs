@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using ShoesShop.Infrastructure.Repositories.Interfaces;
+using ShoesShop.Application.Interfaces.Repositories;
 
 namespace ShoesShop.Infrastructure.Repositories.Implement
 {

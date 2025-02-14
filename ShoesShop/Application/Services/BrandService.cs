@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using ShoesShop.Application.Interfaces;
+using ShoesShop.Application.Interfaces.Repositories;
+using ShoesShop.Application.Interfaces.Services;
 using ShoesShop.Domain.Entities;
-using ShoesShop.Infrastructure.Repositories.Interfaces;
 
 namespace ShoesShop.Application.Services
 {

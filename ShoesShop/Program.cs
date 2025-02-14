@@ -6,10 +6,10 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using ShoesShop.Application.Interfaces;
+using ShoesShop.Application.Interfaces.Repositories;
+using ShoesShop.Application.Interfaces.Services;
 using ShoesShop.Application.Services;
 using ShoesShop.Infrastructure.Repositories.Implement;
-using ShoesShop.Infrastructure.Repositories.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 

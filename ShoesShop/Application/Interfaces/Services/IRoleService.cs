@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace ShoesShop.Application.Interfaces
+namespace ShoesShop.Application.Interfaces.Services
 {
     public interface IRoleService
     {

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ShoesShop.Application.DTOs;
-using ShoesShop.Application.Interfaces;
+using ShoesShop.Application.Interfaces.Services;
 using ShoesShop.Domain.Entities;
 
 namespace ShoesShop.Controllers

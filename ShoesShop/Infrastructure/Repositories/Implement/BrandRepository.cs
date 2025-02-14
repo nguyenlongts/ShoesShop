@@ -1,7 +1,7 @@
 ﻿using API_ShoesShop.Infrastructure.DBContext;
 using Microsoft.EntityFrameworkCore;
+using ShoesShop.Application.Interfaces.Repositories;
 using ShoesShop.Domain.Entities;
-using ShoesShop.Infrastructure.Repositories.Interfaces;
 
 namespace ShoesShop.Infrastructure.Repositories.Implement
 {

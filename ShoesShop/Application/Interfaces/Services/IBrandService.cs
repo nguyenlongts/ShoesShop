@@ -1,6 +1,6 @@
 ﻿using ShoesShop.Domain.Entities;
 
-namespace ShoesShop.Application.Interfaces
+namespace ShoesShop.Application.Interfaces.Services
 {
     public interface IBrandService
     {

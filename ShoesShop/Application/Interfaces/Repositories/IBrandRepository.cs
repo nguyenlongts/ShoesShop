@@ -1,13 +1,12 @@
-﻿
-using ShoesShop.Domain.Entities;
+﻿using ShoesShop.Domain.Entities;
 
-namespace ShoesShop.Infrastructure.Repositories.Interfaces
+namespace ShoesShop.Application.Interfaces.Repositories
 {
     public interface IBrandRepository
     {
 
         Task<bool> AddAsync(Brand brand);
-        Task UpdateAsync(string newName,string oldName);
+        Task UpdateAsync(string newName, string oldName);
 
         Task<List<Brand>> GetAllAsync();
 

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using ShoesShop.Application.Interfaces;
-using ShoesShop.Infrastructure.Repositories.Interfaces;
+using ShoesShop.Application.Interfaces.Repositories;
+using ShoesShop.Application.Interfaces.Services;
 
 namespace ShoesShop.Application.Services
 {

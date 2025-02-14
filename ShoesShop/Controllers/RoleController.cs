@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using ShoesShop.Application.Interfaces;
+using ShoesShop.Application.Interfaces.Services;
 
 namespace ShoesShop.Controllers
 {

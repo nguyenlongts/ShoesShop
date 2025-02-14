@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace ShoesShop.Infrastructure.Repositories.Interfaces
+namespace ShoesShop.Application.Interfaces.Repositories
 {
     public interface IRoleRepository
     {
