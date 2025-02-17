@@ -9,6 +9,7 @@ using Microsoft.IdentityModel.Tokens;
 using ShoesShop.Application.Interfaces.Repositories;
 using ShoesShop.Application.Interfaces.Services;
 using ShoesShop.Application.Services;
+using ShoesShop.Domain.Entities;
 using ShoesShop.Infrastructure.Repositories.Implement;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,6 +20,9 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddScoped<IGenericRepository<Color>,GenericRepository<Color>>();
+builder.Services.AddScoped<IColorRepository, ColorRepository>();
+builder.Services.AddScoped<IColorService, ColorService>();
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddScoped<IBrandRepository, BrandRepository>();
