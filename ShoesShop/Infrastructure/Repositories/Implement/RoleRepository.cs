@@ -39,9 +39,9 @@ namespace ShoesShop.Infrastructure.Repositories.Implement
             return await _roleManager.FindByIdAsync(id);
         }
 
-        public Task<IdentityRole> GetByNameAsync(string name)
+        public async Task<IdentityRole> GetByNameAsync(string name)
         {
-            return _roleManager.FindByNameAsync(name);
+            return await _roleManager.FindByNameAsync(name);
         }
 
         public async Task UpdateAsync(IdentityRole role)
