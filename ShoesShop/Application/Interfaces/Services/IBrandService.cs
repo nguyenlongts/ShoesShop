@@ -8,6 +8,6 @@ namespace ShoesShop.Application.Interfaces.Services
 
         Task<bool> CreateBrandAsync(Brand brand);
 
-        Task<bool> UpdateStatusAsync(Guid brandID, int newStatus);
+        Task<bool> UpdateStatusAsync(Guid brandID);
     }
 }

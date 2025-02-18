@@ -1,6 +1,8 @@
 ﻿using ShoesShop.Domain.Entities;
 using ShoesShop.Application.Interfaces.Repositories;
 using ShoesShop.Application.Interfaces.Services;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ShoesShop.Application.Services
 {
@@ -23,17 +25,14 @@ namespace ShoesShop.Application.Services
 
         public async Task<bool> DeleteColorAsync(int id)
         {
-            var color = await _genericRepository.GetByIdAsync(id);
-            if (color == null || !color.IsActive) return false;
-
-            color.IsActive = false;
-            await _genericRepository.UpdateAsync(color);
+ 
+            await _genericRepository.DeleteAsync(id);
             return true;
         }
 
-        public async Task<IEnumerable<Color>> GetAllColorsAsync()
+        public async Task<IEnumerable<Color>> GetAllColorsAsync(int pageNumber, int pageSize)
         {
-            return (await _genericRepository.GetAllAsync()).Where(c => c.IsActive);
+            return await _genericRepository.GetAllAsync(pageNumber,pageSize);
         }
 
         public async Task<Color> GetColorByNameAsync(string name)
@@ -41,6 +40,23 @@ namespace ShoesShop.Application.Services
             var color = await _colorRepository.GetByNameAsync(name);
             return color;
         }
+
+        public async Task<bool> UpdateStatusAsync(int id)
+        {
+            var entity = await _genericRepository.GetByIdAsync(id);
+            if (entity == null)
+            {
+                return false;
+            }
+
+            // Cập nhật trạng thái
+            entity.IsActive = !entity.IsActive;
+            await _genericRepository.UpdateAsync(entity);
+
+            // Trả về true nếu update thành công
+            return true;
+        }
+        
 
         public async Task<bool> UpdateColorAsync(Color model)
         {

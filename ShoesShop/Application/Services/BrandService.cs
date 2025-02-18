@@ -23,9 +23,9 @@ namespace ShoesShop.Application.Services
         {
             return await _brandRepository.GetAllAsync();
         }
-        public async Task<bool> UpdateStatusAsync([FromBody] Guid brandId, int newStatus)
+        public async Task<bool> UpdateStatusAsync([FromBody] Guid brandId)
         {
-            return await _brandRepository.UpdateStatusAsync(brandId, newStatus);
+            return await _brandRepository.UpdateStatusAsync(brandId);
         }
     }
 }
