@@ -4,6 +4,5 @@
     {
         public Guid BrandID { get; set; }
 
-        public int newStatus { get; set; }
     }
 }
