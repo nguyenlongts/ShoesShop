@@ -11,7 +11,7 @@ namespace ShoesShop.Application.Interfaces.Repositories
         Task<List<Brand>> GetAllAsync();
 
 
-        Task<bool> UpdateStatusAsync(Guid brandId, int newStatus);
+        Task<bool> UpdateStatusAsync(Guid brandId);
 
     }
 }
