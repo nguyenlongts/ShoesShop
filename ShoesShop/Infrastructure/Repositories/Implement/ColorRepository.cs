@@ -17,5 +17,6 @@ namespace ShoesShop.Infrastructure.Repositories.Implement
         {
             return await _context.Colors.FirstOrDefaultAsync(c => c.Name == name);
         }
+        
     }
 }

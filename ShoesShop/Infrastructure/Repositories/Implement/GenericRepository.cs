@@ -15,10 +15,15 @@ namespace ShoesShop.Infrastructure.Repositories.Implement
             _dbSet = context.Set<T>();
         }
 
-        public async Task<IEnumerable<T>> GetAllAsync()
+        public async Task<IEnumerable<T>> GetAllAsync(int pageNumber, int pageSize)
         {
-            return await _dbSet.ToListAsync();
+            // Giả sử bạn đang sử dụng Entity Framework để truy vấn cơ sở dữ liệu
+            return await _dbSet
+                .Skip((pageNumber - 1) * pageSize)  // Bỏ qua số bản ghi đã được truy vấn
+                .Take(pageSize)                    // Lấy số bản ghi theo kích thước trang
+                .ToListAsync();
         }
+
 
         public async Task<T> GetByIdAsync(int id)
         {
@@ -42,16 +47,11 @@ namespace ShoesShop.Infrastructure.Repositories.Implement
         {
             var entity = await _dbSet.FindAsync(id);
             if (entity == null) return;
-
-            var isActiveProperty = typeof(T).GetProperty("IsActive");
-            if (isActiveProperty != null)
-            {
-                isActiveProperty.SetValue(entity, false);
-                _dbSet.Update(entity);
-                await _context.SaveChangesAsync();
-            }
+            _dbSet.Remove(entity);
+            await _context.SaveChangesAsync();
+           
         }
-    }
 
+    }
 
 }

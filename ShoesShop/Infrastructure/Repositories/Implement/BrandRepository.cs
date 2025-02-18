@@ -41,12 +41,12 @@ namespace ShoesShop.Infrastructure.Repositories.Implement
             }
             await _context.SaveChangesAsync();
         }
-        public async Task<bool> UpdateStatusAsync(Guid brandId, int newStatus)
+        public async Task<bool> UpdateStatusAsync(Guid brandId)
         {
             var brand = await _context.Brands.FindAsync(brandId);
             if (brand == null) return false;
 
-            brand.Status = newStatus;
+            brand.IsActive = !brand.IsActive;
             _context.Brands.Update(brand);
             await _context.SaveChangesAsync();
 
