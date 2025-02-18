@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ShoesShop.Application.DTOs;
 using ShoesShop.Application.Interfaces.Services;
@@ -6,6 +7,7 @@ using ShoesShop.Domain.Entities;
 
 namespace ShoesShop.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class BrandController : ControllerBase
@@ -15,9 +17,11 @@ namespace ShoesShop.Controllers
         {
             _brandService = brandService;
         }
+        
         [HttpGet("GetAll")]
         public async Task<IActionResult> GetAll()
         {
+            Console.WriteLine($"User: {User.Identity.Name}, Authenticated: {User.Identity.IsAuthenticated}");
             return Ok(await _brandService.GetAllAsync());
         }
 
@@ -35,14 +39,14 @@ namespace ShoesShop.Controllers
         }
 
         [HttpPut("UpdateStatus")]
-        public async Task<IActionResult> UpdateStatus([FromBody] UpdateStatusRequest request)
+        public async Task<IActionResult> UpdateStatus(Guid id)
         {
-            if (request == null || (request.newStatus != 0 && request.newStatus != 1))
+            if (id == null)
             {
                 return BadRequest(new { message = "Dữ liệu không hợp lệ" });
             }
 
-            var result = await _brandService.UpdateStatusAsync(request.BrandID, request.newStatus);
+            var result = await _brandService.UpdateStatusAsync(id);
             if (!result)
             {
                 return NotFound(new { message = "Brand không tồn tại hoặc cập nhật thất bại" });

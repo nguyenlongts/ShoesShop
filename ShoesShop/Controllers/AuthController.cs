@@ -49,7 +49,7 @@ namespace API_ShoesShop.Controllers
 
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDTO model)
-        {
+            {
             var user = await _userManager.FindByNameAsync(model.Username);
             if (user == null)
             {
@@ -61,12 +61,9 @@ namespace API_ShoesShop.Controllers
                 return Unauthorized("Invalid password");
             }
             var token = await _tokenService.GenerateToken(user);
-            var handler = new JwtSecurityTokenHandler();
-            var jwtToken = handler.ReadJwtToken(token);
-            var expireTime = DateTimeOffset.FromUnixTimeSeconds(long.Parse(jwtToken.Claims.First(c => c.Type == JwtRegisteredClaimNames.Exp).Value)).UtcDateTime;
+    
             var response = new LoginResponse
             {
-                ExpireTime = expireTime.ToString("yyyy-MM-dd HH:mm:ss"),
                 Token = token
             };
             return Ok(response);
