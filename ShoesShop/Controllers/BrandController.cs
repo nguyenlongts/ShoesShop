@@ -7,7 +7,7 @@ using ShoesShop.Domain.Entities;
 
 namespace ShoesShop.Controllers
 {
-    [Authorize]
+    
     [Route("api/[controller]")]
     [ApiController]
     public class BrandController : ControllerBase
@@ -24,7 +24,7 @@ namespace ShoesShop.Controllers
             Console.WriteLine($"User: {User.Identity.Name}, Authenticated: {User.Identity.IsAuthenticated}");
             return Ok(await _brandService.GetAllAsync());
         }
-
+        [Authorize]
         [HttpPost("Create")]
 
         public async Task<IActionResult> Create(Brand brand)
@@ -37,7 +37,7 @@ namespace ShoesShop.Controllers
             return BadRequest("Create failed");
 
         }
-
+        [Authorize]
         [HttpPut("UpdateStatus")]
         public async Task<IActionResult> UpdateStatus(Guid id)
         {

@@ -6,7 +6,7 @@ using ShoesShop.Domain.Entities;
 
 namespace ShoesShop.Controllers
 {
-    [Authorize]
+    
     [Route("api/[controller]")]
     [ApiController]
     public class ColorController : ControllerBase
@@ -17,10 +17,11 @@ namespace ShoesShop.Controllers
             _colorService = colorService;
         }
         [HttpGet("GetAll")]
-        public async Task<IEnumerable<Color>> GetAllAsync(int pageNumber,int pageSize)
+        public async Task<IEnumerable<Color>> GetAllAsync(int pageNumber=1,int pageSize=5)
         {
             return await _colorService.GetAllColorsAsync(pageNumber,pageSize);
         }
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> CreateAsync([FromBody] Color model)
         {
@@ -30,12 +31,13 @@ namespace ShoesShop.Controllers
             }
             return Ok("Add color successfully");
         }
-
+        [Authorize]
         [HttpGet("GetByName")]        
         public async Task<Color> GetColorByNameAsync(string name)
         {
             return await _colorService.GetColorByNameAsync(name);
         }
+        [Authorize]
         [HttpPut("Update")]
         public async Task<IActionResult> Update(Color model)
         {
@@ -46,6 +48,7 @@ namespace ShoesShop.Controllers
             }
             return BadRequest("Update failed");
         }
+        [Authorize]
         [HttpPost("ChangeStatus")]
         public async Task<IActionResult> ChangeStatus(int id)
         {
@@ -59,6 +62,7 @@ namespace ShoesShop.Controllers
             // Nếu update thành công
             return Ok("Color status updated successfully");
         }
+        [Authorize]
         [HttpDelete("Delete")]
         public async Task<IActionResult> Delete(int id)
         {
