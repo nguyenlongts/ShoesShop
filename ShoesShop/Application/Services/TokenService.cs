@@ -26,7 +26,7 @@ namespace API_ShoesShop.Application.Services
             var authClaims = new List<Claim>
             {
                 new Claim(JwtRegisteredClaimNames.Sub,user.Id),
-                new Claim(JwtRegisteredClaimNames.UniqueName,user.UserName),
+                new Claim("Username",user.UserName),
                 new Claim(JwtRegisteredClaimNames.Exp, expireTime.ToString()),
                 new Claim("email_confirm",user.EmailConfirmed.ToString())
             };
