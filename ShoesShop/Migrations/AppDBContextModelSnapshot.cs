@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace DotnetAuth.Migrations
+namespace ShoesShop.Migrations
 {
     [DbContext(typeof(AppDBContext))]
     partial class AppDBContextModelSnapshot : ModelSnapshot
@@ -97,6 +97,9 @@ namespace DotnetAuth.Migrations
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
+
+                    b.Property<bool>("isActive")
+                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 
@@ -246,9 +249,11 @@ namespace DotnetAuth.Migrations
 
             modelBuilder.Entity("ShoesShop.Domain.Entities.Brand", b =>
                 {
-                    b.Property<Guid>("BrandID")
+                    b.Property<int>("BrandID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BrandID"));
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
@@ -259,6 +264,25 @@ namespace DotnetAuth.Migrations
                     b.HasKey("BrandID");
 
                     b.ToTable("Brands");
+                });
+
+            modelBuilder.Entity("ShoesShop.Domain.Entities.Category", b =>
+                {
+                    b.Property<int>("CateID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CateID"));
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("CateID");
+
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("ShoesShop.Domain.Entities.Color", b =>
@@ -292,6 +316,15 @@ namespace DotnetAuth.Migrations
                     b.Property<decimal>("BasePrice")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<int>("BrandId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CateId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CategoryCateID")
+                        .HasColumnType("int");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -305,6 +338,10 @@ namespace DotnetAuth.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ProductId");
+
+                    b.HasIndex("BrandId");
+
+                    b.HasIndex("CategoryCateID");
 
                     b.ToTable("Products");
                 });
@@ -417,6 +454,25 @@ namespace DotnetAuth.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("ShoesShop.Domain.Entities.Product", b =>
+                {
+                    b.HasOne("ShoesShop.Domain.Entities.Brand", "Brand")
+                        .WithMany("Products")
+                        .HasForeignKey("BrandId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ShoesShop.Domain.Entities.Category", "Category")
+                        .WithMany("Products")
+                        .HasForeignKey("CategoryCateID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Brand");
+
+                    b.Navigation("Category");
+                });
+
             modelBuilder.Entity("ShoesShop.Domain.Entities.ProductDetail", b =>
                 {
                     b.HasOne("ShoesShop.Domain.Entities.Color", "Color")
@@ -442,6 +498,16 @@ namespace DotnetAuth.Migrations
                     b.Navigation("Product");
 
                     b.Navigation("Size");
+                });
+
+            modelBuilder.Entity("ShoesShop.Domain.Entities.Brand", b =>
+                {
+                    b.Navigation("Products");
+                });
+
+            modelBuilder.Entity("ShoesShop.Domain.Entities.Category", b =>
+                {
+                    b.Navigation("Products");
                 });
 
             modelBuilder.Entity("ShoesShop.Domain.Entities.Product", b =>

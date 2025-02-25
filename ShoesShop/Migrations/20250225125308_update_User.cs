@@ -2,21 +2,17 @@
 
 #nullable disable
 
-namespace DotnetAuth.Migrations
+namespace ShoesShop.Migrations
 {
     /// <inheritdoc />
-    public partial class Update_brand : Migration
+    public partial class update_User : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
-                name: "Status",
-                table: "Brands");
-
             migrationBuilder.AddColumn<bool>(
-                name: "IsActive",
-                table: "Brands",
+                name: "isActive",
+                table: "AspNetUsers",
                 type: "bit",
                 nullable: false,
                 defaultValue: false);
@@ -26,15 +22,8 @@ namespace DotnetAuth.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "IsActive",
-                table: "Brands");
-
-            migrationBuilder.AddColumn<int>(
-                name: "Status",
-                table: "Brands",
-                type: "int",
-                nullable: false,
-                defaultValue: 0);
+                name: "isActive",
+                table: "AspNetUsers");
         }
     }
 }
