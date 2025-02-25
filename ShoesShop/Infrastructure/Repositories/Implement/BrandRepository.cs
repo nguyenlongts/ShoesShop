@@ -14,17 +14,10 @@ namespace ShoesShop.Infrastructure.Repositories.Implement
             _context = context;
         }
 
-        public async Task<bool> AddAsync(Brand brand)
+        public async Task AddAsync(Brand brand)
         {
-            if (await _context.Brands.AnyAsync(b => b.Name == brand.Name))
-                return false;
-            if (brand.BrandID == Guid.Empty) 
-            {
-                brand.BrandID = Guid.NewGuid(); 
-            }
             _context.Brands.Add(brand);
             await _context.SaveChangesAsync();
-            return true;
         }
 
         public async Task<List<Brand>> GetAllAsync()
@@ -32,16 +25,12 @@ namespace ShoesShop.Infrastructure.Repositories.Implement
             return await _context.Brands.ToListAsync();
         }
 
-        public async Task UpdateAsync(string newName,string oldName)
+        public async Task UpdateAsync(Brand brand)
         {
-            var existBrand = await _context.Brands.FirstOrDefaultAsync(b => b.Name == oldName);
-            if (existBrand != null)
-            {
-                existBrand.Name = newName;
-            }
+            _context.Update(brand);
             await _context.SaveChangesAsync();
         }
-        public async Task<bool> UpdateStatusAsync(Guid brandId)
+        public async Task<bool> UpdateStatusAsync(int brandId)
         {
             var brand = await _context.Brands.FindAsync(brandId);
             if (brand == null) return false;
@@ -53,5 +42,24 @@ namespace ShoesShop.Infrastructure.Repositories.Implement
             return true;
         }
 
+        public async Task DeleteAsync(int id)
+        {
+            var existingBrand = await _context.Brands.FindAsync(id);
+            _context.Brands.Remove(existingBrand);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<IEnumerable<Brand>> GetAllAsync(int pageNumber, int pageSize)
+        {
+            return await _context.Brands.Skip((pageNumber-1)*pageSize).Take(pageSize).ToListAsync();
+        }
+
+        async Task<Brand> IGenericRepository<Brand>.GetByIdAsync(int id)
+        {
+            return await _context.Brands.FindAsync(id);
+        }
+
+        
+        
     }
 }

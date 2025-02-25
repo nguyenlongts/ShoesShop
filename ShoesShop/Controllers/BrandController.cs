@@ -17,16 +17,14 @@ namespace ShoesShop.Controllers
         {
             _brandService = brandService;
         }
-        
+
         [HttpGet("GetAll")]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll(int pageSize = 10,int pageNum = 1)
         {
-            Console.WriteLine($"User: {User.Identity.Name}, Authenticated: {User.Identity.IsAuthenticated}");
-            return Ok(await _brandService.GetAllAsync());
+            return Ok(await _brandService.GetAllAsync(pageSize,pageNum));
         }
         [Authorize]
         [HttpPost("Create")]
-
         public async Task<IActionResult> Create(Brand brand)
         {
             var result = await _brandService.CreateBrandAsync(brand);
@@ -39,7 +37,7 @@ namespace ShoesShop.Controllers
         }
         [Authorize]
         [HttpPut("UpdateStatus")]
-        public async Task<IActionResult> UpdateStatus(Guid id)
+        public async Task<IActionResult> UpdateStatus(int id)
         {
             if (id == null)
             {

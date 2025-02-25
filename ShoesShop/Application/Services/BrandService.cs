@@ -16,16 +16,24 @@ namespace ShoesShop.Application.Services
 
         public async Task<bool> CreateBrandAsync(Brand brand)
         {
-            return await _brandRepository.AddAsync(brand);
+            await _brandRepository.AddAsync(brand);
+            var exists = await _brandRepository.GetByIdAsync(brand.BrandID);
+            if (exists != null)
+            {
+                return true;
+            }
+            return false;
         }
 
-        public async Task<List<Brand>> GetAllAsync()
+        public async Task<IEnumerable<Brand>> GetAllAsync(int pageSize,int pageNum)
         {
-            return await _brandRepository.GetAllAsync();
+            return await _brandRepository.GetAllAsync(pageNum, pageSize);
         }
-        public async Task<bool> UpdateStatusAsync([FromBody] Guid brandId)
+
+        Task<bool> IBrandService.UpdateStatusAsync(int brandID)
         {
-            return await _brandRepository.UpdateStatusAsync(brandId);
+            var result = _brandRepository.UpdateStatusAsync(brandID);
+            return result;
         }
     }
 }

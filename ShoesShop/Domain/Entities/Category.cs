@@ -2,10 +2,10 @@
 
 namespace ShoesShop.Domain.Entities
 {
-    public class Brand
+    public class Category
     {
         [Key]
-        public int BrandID { get; set; }
+        public int CateID { get; set; }
         public string? Name { get; set; }
 
         public bool IsActive { get; set; }

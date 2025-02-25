@@ -2,16 +2,16 @@
 
 namespace ShoesShop.Application.Interfaces.Repositories
 {
-    public interface IBrandRepository
+    public interface IBrandRepository : IGenericRepository<Brand>
     {
 
-        Task<bool> AddAsync(Brand brand);
-        Task UpdateAsync(string newName, string oldName);
+        //Task<bool> AddAsync(Brand brand);
+        //Task UpdateAsync(string newName, string oldName);
 
-        Task<List<Brand>> GetAllAsync();
+        //Task<List<Brand>> GetAllAsync();
 
 
-        Task<bool> UpdateStatusAsync(Guid brandId);
+        Task<bool> UpdateStatusAsync(int brandId);
 
     }
 }
