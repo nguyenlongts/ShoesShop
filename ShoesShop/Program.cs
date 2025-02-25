@@ -48,6 +48,8 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.AddScoped<IGenericRepository<Color>,GenericRepository<Color>>();
 builder.Services.AddScoped<IColorRepository, ColorRepository>();
 builder.Services.AddScoped<IColorService, ColorService>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddScoped<IBrandRepository, BrandRepository>();
