@@ -38,6 +38,8 @@ namespace API_ShoesShop.Controllers
                 DoB = model.DoB,
                 PhoneNumber = model.Phone,
                 Gender = model.Gender,
+                LastName=model.LastName,
+                FirstName=model.FirstName
             };
             var result = await _userManager.CreateAsync(user, model.Password);
 
@@ -45,7 +47,7 @@ namespace API_ShoesShop.Controllers
                 return BadRequest(result.Errors);
 
             return Ok(new { message = "Registration successful!" });
-        }
+            }
 
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDTO model)
@@ -68,5 +70,13 @@ namespace API_ShoesShop.Controllers
             };
             return Ok(response);
         }
+
+        [HttpPost("logout")]
+        public IActionResult Logout()
+        {
+            Response.Cookies.Delete("jwtToken");
+            return Ok(new { message = "Logged out successfully" });
+        }
+
     }
 }

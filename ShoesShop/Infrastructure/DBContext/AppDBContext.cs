@@ -18,7 +18,7 @@ namespace API_ShoesShop.Infrastructure.DBContext
         public DbSet<Size> Sizes { get; set; }
 
         public DbSet<Product> Products { get; set; }
-
+        public DbSet<Category> Categories { get; set; }
         public DbSet<ProductDetail> ProductDetails { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
