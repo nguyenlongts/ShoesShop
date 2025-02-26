@@ -1,17 +1,13 @@
-﻿using ShoesShop.Domain.Entities;
+﻿using ShoesShop.Application.DTOs;
+using ShoesShop.Domain.Entities;
 
 namespace ShoesShop.Application.Interfaces.Repositories
 {
     public interface IBrandRepository : IGenericRepository<Brand>
     {
-
-        //Task<bool> AddAsync(Brand brand);
-        //Task UpdateAsync(string newName, string oldName);
-
-        //Task<List<Brand>> GetAllAsync();
-
-
         Task<bool> UpdateStatusAsync(int brandId);
+        Task AddAsync(CreateBrandDTO model);
 
+        Task<Brand> GetByNameAsync(string name);
     }
 }
