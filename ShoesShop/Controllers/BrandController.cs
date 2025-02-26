@@ -25,7 +25,7 @@ namespace ShoesShop.Controllers
         }
         [Authorize]
         [HttpPost("Create")]
-        public async Task<IActionResult> Create(Brand brand)
+        public async Task<IActionResult> Create(CreateBrandDTO brand)
         {
             var result = await _brandService.CreateBrandAsync(brand);
             if (result)

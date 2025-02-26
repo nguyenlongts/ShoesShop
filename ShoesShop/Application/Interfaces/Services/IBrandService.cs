@@ -1,4 +1,5 @@
-﻿using ShoesShop.Domain.Entities;
+﻿using ShoesShop.Application.DTOs;
+using ShoesShop.Domain.Entities;
 
 namespace ShoesShop.Application.Interfaces.Services
 {
@@ -6,7 +7,7 @@ namespace ShoesShop.Application.Interfaces.Services
     {
         Task<IEnumerable<Brand>> GetAllAsync(int pageSize,int pageNum);
 
-        Task<bool> CreateBrandAsync(Brand brand);
+        Task<bool> CreateBrandAsync(CreateBrandDTO brand);
 
         Task<bool> UpdateStatusAsync(int brandID);
     }

@@ -1,5 +1,6 @@
 ﻿using API_ShoesShop.Infrastructure.DBContext;
 using Microsoft.EntityFrameworkCore;
+using ShoesShop.Application.DTOs;
 using ShoesShop.Application.Interfaces.Repositories;
 using ShoesShop.Domain.Entities;
 
@@ -13,10 +14,14 @@ namespace ShoesShop.Infrastructure.Repositories.Implement
         {
             _context = context;
         }
-
-        public async Task AddAsync(Brand brand)
+        public async Task<Brand> GetByNameAsync(string name)
         {
-            _context.Brands.Add(brand);
+            return await _context.Brands.FirstOrDefaultAsync(b => b.Name == name);
+        }
+        public async Task AddAsync(CreateBrandDTO brand)
+        {
+            var newBrand = new Brand { IsActive = brand.IsActive,Name=brand.Name };
+            _context.Brands.Add(newBrand);
             await _context.SaveChangesAsync();
         }
 

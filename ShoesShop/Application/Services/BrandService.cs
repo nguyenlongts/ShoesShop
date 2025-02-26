@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using ShoesShop.Application.DTOs;
 using ShoesShop.Application.Interfaces.Repositories;
 using ShoesShop.Application.Interfaces.Services;
 using ShoesShop.Domain.Entities;
@@ -14,7 +15,7 @@ namespace ShoesShop.Application.Services
             _brandRepository = brandRepository;
         }
 
-        public async Task<bool> CreateBrandAsync(Brand brand)
+        public async Task<bool> CreateBrandAsync(CreateBrandDTO brand)
         {
             await _brandRepository.AddAsync(brand);
             var exists = await _brandRepository.GetByIdAsync(brand.BrandID);

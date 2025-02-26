@@ -17,6 +17,11 @@ namespace ShoesShop.Infrastructure.Repositories.Implement
         {
             return await _context.Colors.FirstOrDefaultAsync(c => c.Name == name);
         }
-        
+        public async Task AddAsync(Color color)
+        {
+            await _context.Colors.AddAsync(color);
+            await _context.SaveChangesAsync();
+       
+        }
     }
 }

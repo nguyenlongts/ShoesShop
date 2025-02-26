@@ -19,7 +19,7 @@ namespace ShoesShop.Application.Services
         public async Task<bool> CreateColorAsync(Color model)
         {
             model.IsActive = true; // Khi tạo mới, luôn active
-            await _genericRepository.AddAsync(model);
+            await _colorRepository.AddAsync(model);
             return true;
         }
 
