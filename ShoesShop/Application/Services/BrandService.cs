@@ -17,10 +17,11 @@ namespace ShoesShop.Application.Services
 
         public async Task<bool> CreateBrandAsync(CreateBrandDTO brand)
         {
-            await _brandRepository.AddAsync(brand);
-            var exists = await _brandRepository.GetByIdAsync(brand.BrandID);
-            if (exists != null)
+            
+            var exists = await _brandRepository.GetByNameAsync(brand.Name);
+            if (exists == null)
             {
+                await _brandRepository.AddAsync(brand);
                 return true;
             }
             return false;
