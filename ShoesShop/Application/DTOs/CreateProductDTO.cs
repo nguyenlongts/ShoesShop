@@ -6,6 +6,9 @@
 
         public string Description { get; set; }
 
+        public float BasePrice { get; set; }
         public int BrandID { get; set; }
+
+        public int CateID { get; set; }
     }
 }

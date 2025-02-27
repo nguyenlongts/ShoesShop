@@ -4,6 +4,7 @@ using API_ShoesShop.Infrastructure.DBContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ShoesShop.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    partial class AppDBContextModelSnapshot : ModelSnapshot
+    [Migration("20250227143141_Product1")]
+    partial class Product1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -313,13 +316,16 @@ namespace ShoesShop.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProductId"));
 
-                    b.Property<float>("BasePrice")
-                        .HasColumnType("real");
+                    b.Property<decimal>("BasePrice")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("BrandId")
                         .HasColumnType("int");
 
                     b.Property<int>("CateId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CategoryCateID")
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
@@ -340,7 +346,7 @@ namespace ShoesShop.Migrations
 
                     b.HasIndex("BrandId");
 
-                    b.HasIndex("CateId");
+                    b.HasIndex("CategoryCateID");
 
                     b.ToTable("Products");
                 });
@@ -463,7 +469,7 @@ namespace ShoesShop.Migrations
 
                     b.HasOne("ShoesShop.Domain.Entities.Category", "Category")
                         .WithMany("Products")
-                        .HasForeignKey("CateId")
+                        .HasForeignKey("CategoryCateID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
