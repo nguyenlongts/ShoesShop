@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace ShoesShop.Domain.Entities
 {
@@ -7,8 +8,10 @@ namespace ShoesShop.Domain.Entities
         [Key]
         public int SizeId { get; set; }
 
-        public int Name { get; set; }
+        public string Name { get; set; }
 
         public bool IsActive { get; set; } = true;
+        [JsonIgnore]
+        public ICollection<Product> Products { get; set; } = new List<Product>();
     }
 }

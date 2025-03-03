@@ -5,7 +5,7 @@ namespace ShoesShop.Application.Interfaces.Services
 {
     public interface IBrandService
     {
-        Task<IEnumerable<Brand>> GetAllAsync(int pageSize,int pageNum);
+        Task<ResponseDTO<Brand>> GetAllAsync(int pageSize,int pageNum);
 
         Task<bool> CreateBrandAsync(CreateBrandDTO brand);
 

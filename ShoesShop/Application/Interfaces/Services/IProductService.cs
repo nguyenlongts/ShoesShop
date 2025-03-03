@@ -5,7 +5,7 @@ namespace ShoesShop.Application.Interfaces.Services
 {
     public interface IProductService
     {
-        Task<IEnumerable<GetProductDTO>> GetAllAdminAsync(int pageSize,int pageNum);
+        Task<ProductResponseDTO> GetAllAdminAsync(int pageSize,int pageNum);
         Task<IEnumerable<Product>> GetProductsCustomerAsync();
         Task<bool> CreateAsync(CreateProductDTO product);
         Task<Product> GetProductByNameAsync(string name);

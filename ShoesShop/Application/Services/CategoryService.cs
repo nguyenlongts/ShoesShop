@@ -32,9 +32,9 @@ namespace ShoesShop.Application.Services
             return cate;
         }
 
-        public async Task<IEnumerable<Category>> GetAllAsync(int pageSize,int pageNum)
+        public async Task<ResponseDTO<Category>> GetAllAsync(int pageSize,int pageNum)
         {
-            return await _CategoryRepository.GetAllAsync(pageNum, pageSize);
+            return await _CategoryRepository.GetAllAsync(pageNum,pageSize);
         }
 
         Task<bool> ICategoryService.UpdateStatusAsync(int CategoryID)

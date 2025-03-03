@@ -54,9 +54,13 @@ namespace ShoesShop.Infrastructure.Repositories.Implement
             await _context.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<Brand>> GetAllAsync(int pageNumber, int pageSize)
+        public async Task<ResponseDTO<Brand>> GetAllAsync(int pageNumber, int pageSize)
         {
-            return await _context.Brands.Skip((pageNumber-1)*pageSize).Take(pageSize).ToListAsync();
+            int totalItem = await _context.Brands.CountAsync();
+
+            var items = await _context.Brands.Skip((pageNumber-1)*pageSize).Take(pageSize).ToListAsync();
+            int totalPages = (int)Math.Ceiling((decimal)totalItem / pageSize);
+            return new ResponseDTO<Brand> { Items = items, TotalPages = totalPages,TotalItems=totalItem };
         }
 
         async Task<Brand> IGenericRepository<Brand>.GetByIdAsync(int id)

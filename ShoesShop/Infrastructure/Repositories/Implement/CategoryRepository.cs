@@ -25,10 +25,6 @@ namespace ShoesShop.Infrastructure.Repositories.Implement
             await _context.SaveChangesAsync();
         }
 
-        public async Task<List<Category>> GetAllAsync()
-        {
-            return await _context.Categories.ToListAsync();
-        }
 
         public async Task UpdateAsync(Category Category)
         {
@@ -54,17 +50,18 @@ namespace ShoesShop.Infrastructure.Repositories.Implement
             await _context.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<Category>> GetAllAsync(int pageNumber, int pageSize)
-        {
-            return await _context.Categories.Skip((pageNumber-1)*pageSize).Take(pageSize).ToListAsync();
-        }
 
         async Task<Category> IGenericRepository<Category>.GetByIdAsync(int id)
         {
             return await _context.Categories.FindAsync(id);
         }
 
-        
-        
+        public async Task<ResponseDTO<Category>> GetAllAsync(int pageNumber, int pageSize)
+        {
+            int totalItem = await _context.Categories.CountAsync();
+            var items = await _context.Categories.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
+            int totalPages = (int)Math.Ceiling((decimal)totalItem / pageSize);
+            return new ResponseDTO<Category> { Items = items, TotalPages = totalPages, TotalItems = totalItem };
+        }
     }
 }

@@ -1,8 +1,10 @@
-﻿namespace ShoesShop.Application.Interfaces.Repositories
+﻿using ShoesShop.Application.DTOs;
+
+namespace ShoesShop.Application.Interfaces.Repositories
 {
     public interface IGenericRepository<T> where T  :class
     {
-        Task<IEnumerable<T>> GetAllAsync(int pageNumber,int pageSize);
+        Task<ResponseDTO<T>> GetAllAsync(int pageNumber,int pageSize);
         Task<T> GetByIdAsync(int id);
        
         Task UpdateAsync(T entity);

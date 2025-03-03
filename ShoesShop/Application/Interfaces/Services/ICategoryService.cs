@@ -6,7 +6,7 @@ namespace ShoesShop.Application.Interfaces.Services
 {
     public interface ICategoryService
     {
-        Task<IEnumerable<Category>> GetAllAsync(int pageSize,int pageNum);
+        Task<ResponseDTO<Category>> GetAllAsync(int pageSize,int pageNum);
 
         Task<bool> CreateCategoryAsync(CreateCateDTO model);
         Task<Category> GetCategoryByNameAsync(string name);

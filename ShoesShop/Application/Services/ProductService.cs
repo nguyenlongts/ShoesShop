@@ -25,9 +25,9 @@ namespace ShoesShop.Application.Services
             return result;
         }
 
-        public async Task<IEnumerable<GetProductDTO>> GetAllAdminAsync(int pageSize, int pageNum)
+        public async Task<ProductResponseDTO> GetAllAdminAsync(int pageSize, int pageNum)
         {
-            return await _productRepository.GetAllAdminAsync(pageSize,pageNum);
+            return await _productRepository.GetProductsAdmin(pageSize,pageNum);
         }
 
         async Task<Product> IProductService.GetProductByIdAsync(int id)

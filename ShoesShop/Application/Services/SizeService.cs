@@ -7,39 +7,39 @@ using ShoesShop.Application.DTOs;
 
 namespace ShoesShop.Application.Services
 {
-    public class ColorService : IColorService
+    public class SizeService : ISizeService
     {
 
-        private readonly IGenericRepository<Color> _genericRepository;
-        private readonly IColorRepository _colorRepository;
-        public ColorService(IColorRepository colorRepository, IGenericRepository<Color> genericRepository)
+        private readonly IGenericRepository<Size> _genericRepository;
+        private readonly ISizeRepository _SizeRepository;
+        public SizeService(ISizeRepository SizeRepository, IGenericRepository<Size> genericRepository)
         {
-            _colorRepository = colorRepository;
+            _SizeRepository = SizeRepository;
             _genericRepository = genericRepository;
         }
-        public async Task<bool> CreateColorAsync(Color model)
+        public async Task<bool> CreateSizeAsync(Size model)
         {
-            model.IsActive = true; // Khi tạo mới, luôn active
-            await _colorRepository.AddAsync(model);
+            model.IsActive = true;
+            await _SizeRepository.AddAsync(model);
             return true;
         }
 
-        public async Task<bool> DeleteColorAsync(int id)
+        public async Task<bool> DeleteSizeAsync(int id)
         {
  
             await _genericRepository.DeleteAsync(id);
             return true;
         }
 
-        public async Task<ResponseDTO<Color>> GetAllColorsAsync(int pageNumber, int pageSize)
+        public async Task<ResponseDTO<Size>> GetAllSizeAsync(int pageNumber, int pageSize)
         {
             return await _genericRepository.GetAllAsync(pageNumber,pageSize);
         }
 
-        public async Task<Color> GetColorByNameAsync(string name)
+        public async Task<Size> GetSizeByNameAsync(string name)
         {
-            var color = await _colorRepository.GetByNameAsync(name);
-            return color;
+            var Size = await _SizeRepository.GetByNameAsync(name);
+            return Size;
         }
 
         public async Task<bool> UpdateStatusAsync(int id)
@@ -59,7 +59,7 @@ namespace ShoesShop.Application.Services
         }
         
 
-        public async Task<bool> UpdateColorAsync(Color model)
+        public async Task<bool> UpdateSizeAsync(Size model)
         {
             await _genericRepository.UpdateAsync(model);
             return true;

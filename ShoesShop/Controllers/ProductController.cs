@@ -16,13 +16,13 @@ namespace ShoesShop.Controllers
             _productService = productService;
         }
 
-        [Authorize]
+        //[Authorize]
         [HttpGet("GetAllAdmin")]
         public async Task<IActionResult> GetAllAdmin(int pageSize=5, int pageNum=1) {
-            var products = await _productService.GetAllAdminAsync(pageSize, pageNum);
-            if (products.Count() > 0)
+            var response = await _productService.GetAllAdminAsync(pageSize, pageNum);
+            if (response != null)
             {
-                return Ok(products);
+                return Ok(response);
             }
             return BadRequest("Get Failed");
         }

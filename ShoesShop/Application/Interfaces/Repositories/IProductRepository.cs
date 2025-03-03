@@ -5,7 +5,7 @@ namespace ShoesShop.Application.Interfaces.Repositories
 {
     public interface IProductRepository
     {
-        Task<IEnumerable<GetProductDTO>> GetAllAdminAsync(int pageSize,int pageNum);
+        Task<ProductResponseDTO> GetProductsAdmin(int pageSize,int pageNum);
         Task<IEnumerable<Product>> GetProductsCustomerAsync();
 
         Task<bool> CreateAsync(CreateProductDTO product);

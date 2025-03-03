@@ -27,7 +27,7 @@ namespace ShoesShop.Application.Services
             return false;
         }
 
-        public async Task<IEnumerable<Brand>> GetAllAsync(int pageSize,int pageNum)
+        public async Task<ResponseDTO<Brand>> GetAllAsync(int pageSize,int pageNum)
         {
             return await _brandRepository.GetAllAsync(pageNum, pageSize);
         }

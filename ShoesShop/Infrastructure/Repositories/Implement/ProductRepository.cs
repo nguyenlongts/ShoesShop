@@ -35,20 +35,37 @@ namespace ShoesShop.Infrastructure.Repositories.Implement
             return true;
         }
 
-        async Task<IEnumerable<GetProductDTO>> IProductRepository.GetAllAdminAsync(int pageSize, int pageNum)
+        public async Task<ProductResponseDTO> GetProductsAdmin(int pageSize, int pageNum)
         {
-            return await _context.Products.Include(p => p.Brand).Include(p => p.Category).Skip((pageNum - 1) * pageSize).Take(pageSize).Select(p => new GetProductDTO
+
+            int totalProducts = await _context.Products.CountAsync();
+
+
+            var products = await _context.Products
+                .Include(p => p.Brand)
+                .Include(p => p.Category)
+                .Skip((pageNum - 1) * pageSize)
+                .Take(pageSize)
+                .Select(p => new GetProductDTO
+                {
+                    ProductId = p.ProductId,
+                    Name = p.Name,
+                    Description = p.Description,
+                    BasePrice = (decimal)p.BasePrice,
+                    Image = p.Image,
+                    BrandName = p.Brand.Name,
+                    CategoryName = p.Category.Name,
+                    IsActive = p.IsActive
+                }).ToListAsync();
+            int totalPages = (int)Math.Ceiling((decimal)totalProducts / pageSize);
+            return new ProductResponseDTO
             {
-                ProductId = p.ProductId,
-                Name = p.Name,
-                Description = p.Description,
-                BasePrice = (decimal)p.BasePrice,
-                Image = p.Image,
-                BrandName = p.Brand.Name, 
-                CategoryName = p.Category.Name,
-                IsActive = p.IsActive
-            }).ToListAsync();
+                TotalPages = totalPages,
+                TotalProducts = totalProducts,
+                Products = products
+            };
         }
+
 
         async Task<Product> IProductRepository.GetProductByIdAsync(int id)
         {

@@ -1,5 +1,6 @@
 ﻿using API_ShoesShop.Infrastructure.DBContext;
 using Microsoft.EntityFrameworkCore;
+using ShoesShop.Application.DTOs;
 using ShoesShop.Application.Interfaces.Repositories;
 
 namespace ShoesShop.Infrastructure.Repositories.Implement
@@ -15,12 +16,22 @@ namespace ShoesShop.Infrastructure.Repositories.Implement
             _dbSet = context.Set<T>();
         }
 
-        public async Task<IEnumerable<T>> GetAllAsync(int pageNumber, int pageSize)
+        public async Task<ResponseDTO<T>> GetAllAsync(int pageNumber, int pageSize)
         {
-            return await _dbSet
+
+            int totalItem = _dbSet.Count();
+            var items =await _dbSet
                 .Skip((pageNumber - 1) * pageSize) 
                 .Take(pageSize)                    
                 .ToListAsync();
+            int totalPages = (int)Math.Ceiling((decimal)totalItem / pageSize);
+
+            return new ResponseDTO<T>
+            {
+                Items = items,
+                TotalItems = totalItem,
+                TotalPages = totalPages
+            };
         }
 
         public async Task<T> GetByIdAsync(int id)

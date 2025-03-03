@@ -9,65 +9,65 @@ namespace ShoesShop.Controllers
     
     [Route("api/[controller]")]
     [ApiController]
-    public class ColorController : ControllerBase
+    public class SizeController : ControllerBase
     {
-        private readonly IColorService _colorService;
-        public ColorController(IColorService colorService)
+        private readonly ISizeService _SizeService;
+        public SizeController(ISizeService SizeService)
         {
-            _colorService = colorService;
+            _SizeService = SizeService;
         }
         [HttpGet("GetAll")]
         public async Task<IActionResult> GetAllAsync(int pageNumber=1,int pageSize=5)
         {
-            var result = _colorService.GetAllColorsAsync(pageNumber, pageSize);
+            var result = await _SizeService.GetAllSizeAsync(pageNumber, pageSize);
             return Ok(result);
         }
-        [Authorize]
+        //[authorize]
         [HttpPost]
-        public async Task<IActionResult> CreateAsync([FromBody] Color model)
+        public async Task<IActionResult> CreateAsync([FromBody] Size model)
         {
-            var result = await _colorService.CreateColorAsync(model);
+            var result = await _SizeService.CreateSizeAsync(model);
             if (result == false) {
                 return BadRequest("Add failed");
             }
-            return Ok("Add color successfully");
+            return Ok("Add Size successfully");
         }
-        [Authorize]
+        //[authorize]
         [HttpGet("GetByName")]        
-        public async Task<Color> GetColorByNameAsync(string name)
+        public async Task<Size> GetSizeByNameAsync(string name)
         {
-            return await _colorService.GetColorByNameAsync(name);
+            return await _SizeService.GetSizeByNameAsync(name);
         }
-        [Authorize]
+        ////[authorize]
         [HttpPut("Update")]
-        public async Task<IActionResult> Update(Color model)
+        public async Task<IActionResult> Update(Size model)
         {
-            var result =await _colorService.UpdateColorAsync(model);
+            var result =await _SizeService.UpdateSizeAsync(model);
             if (result == true)
             {
-                return Ok("Update color successfully");
+                return Ok("Update Size successfully");
             }
             return BadRequest("Update failed");
         }
-        [Authorize]
+        //[authorize]
         [HttpPost("ChangeStatus")]
         public async Task<IActionResult> ChangeStatus(int id)
         {
-            var result = await _colorService.UpdateStatusAsync(id);
+            var result = await _SizeService.UpdateStatusAsync(id);
 
             if (!result)
             {
-                return NotFound("Color not found");
+                return NotFound("Size not found");
             }
 
             // Nếu update thành công
-            return Ok("Color status updated successfully");
+            return Ok("Size status updated successfully");
         }
-        [Authorize]
+        //[authorize]
         [HttpDelete("Delete")]
         public async Task<IActionResult> Delete(int id)
         {
-            var result = await _colorService.DeleteColorAsync(id);
+            var result = await _SizeService.DeleteSizeAsync(id);
             if(result == true)
             {
                 return Ok("Delete Successfully");
