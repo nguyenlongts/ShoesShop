@@ -34,9 +34,14 @@ namespace ShoesShop.Controllers
         }
         //[authorize]
         [HttpGet("GetByName")]        
-        public async Task<Size> GetSizeByNameAsync(string name)
+        public async Task<IActionResult> GetSizeByNameAsync(string name)
         {
-            return await _SizeService.GetSizeByNameAsync(name);
+            var result = await _SizeService.GetSizeByNameAsync(name);
+            if (result == null)
+            {
+                return Ok();
+            }
+            return BadRequest("Existed!");
         }
         ////[authorize]
         [HttpPut("Update")]

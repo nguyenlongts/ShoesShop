@@ -19,7 +19,7 @@ namespace ShoesShop.Controllers
         [HttpGet("GetAll")]
         public async Task<IActionResult> GetAllAsync(int pageNumber=1,int pageSize=5)
         {
-            var result = _colorService.GetAllColorsAsync(pageNumber, pageSize);
+            var result = await _colorService.GetAllColorsAsync(pageNumber, pageSize);
             return Ok(result);
         }
         [Authorize]
