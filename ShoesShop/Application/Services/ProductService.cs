@@ -30,7 +30,7 @@ namespace ShoesShop.Application.Services
             return await _productRepository.GetProductsAdmin(pageSize,pageNum);
         }
 
-        async Task<Product> IProductService.GetProductByIdAsync(int id)
+        async Task<GetProductDTO> IProductService.GetProductByIdAsync(int id)
         {
             return await _productRepository.GetProductByIdAsync(id);
         }

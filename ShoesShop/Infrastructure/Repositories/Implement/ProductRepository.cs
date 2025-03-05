@@ -16,7 +16,7 @@ namespace ShoesShop.Infrastructure.Repositories.Implement
 
         async Task<bool> IProductRepository.CreateAsync(CreateProductDTO product)
         {
-            var newProduct = new Product { CateId = product.CateID, BrandId = product.BrandID, Name = product.ProductName, Description = product.Description,BasePrice=product.BasePrice };
+            var newProduct = new Product { CateID = product.CateID, BrandID = product.BrandID, Name = product.ProductName, Description = product.Description,BasePrice=product.BasePrice };
             _context.Products.Add(newProduct);
             var result = await _context.SaveChangesAsync();
             return result > 0;
@@ -67,9 +67,23 @@ namespace ShoesShop.Infrastructure.Repositories.Implement
         }
 
 
-        async Task<Product> IProductRepository.GetProductByIdAsync(int id)
+        async Task<GetProductDTO> IProductRepository.GetProductByIdAsync(int id)
         {
-            return await _context.Products.FindAsync(id);
+            var existProduct = await _context.Products.Include(p => p.Brand).Include(p => p.Category).Include(p=>p.ProductDetails).FirstOrDefaultAsync(p => p.ProductId == id);
+            {
+                return new GetProductDTO
+                {
+                    ProductId = existProduct.ProductId,
+                    Name = existProduct.Name,
+                    Description = existProduct.Description,
+                    BasePrice = (decimal)existProduct.BasePrice,
+                    Image = existProduct.Image,
+                    BrandName = existProduct.Brand.Name,
+                    CategoryName = existProduct.Category.Name,
+                    IsActive = existProduct.IsActive
+                };
+            }
+            return null;
         }
 
         async Task<Product> IProductRepository.GetProductByNameAsync(string name)
