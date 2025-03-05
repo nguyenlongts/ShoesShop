@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using API_ShoesShop.Infrastructure.DBContext;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ShoesShop.Application.DTOs;
@@ -11,6 +12,7 @@ namespace ShoesShop.Controllers
     public class ProductController : ControllerBase
     {
         private readonly IProductService _productService;
+
         public ProductController(IProductService productService)
         {
             _productService = productService;
@@ -26,7 +28,16 @@ namespace ShoesShop.Controllers
             }
             return BadRequest("Get Failed");
         }
-
+        [HttpGet("GetByID")]
+        public async Task<IActionResult> GetByID(int id)
+        {
+            var response = await _productService.GetProductByIdAsync(id);
+            if (response != null)
+            {
+                return Ok(response);
+            }
+            return BadRequest("Get Failed");
+        }
         [Authorize]
         [HttpPost("Create")]
         public async Task<IActionResult> Create(CreateProductDTO model) {

@@ -11,7 +11,7 @@ namespace ShoesShop.Application.Interfaces.Repositories
         Task<bool> CreateAsync(CreateProductDTO product);
         Task<Product> GetProductByNameAsync(string name);
 
-        Task<Product> GetProductByIdAsync(int id);
+        Task<GetProductDTO> GetProductByIdAsync(int id);
 
         Task<bool> UpdateAsync(Product product);
         Task<bool> DeleteAsync(int id);
