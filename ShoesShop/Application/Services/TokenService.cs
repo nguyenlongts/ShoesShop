@@ -28,7 +28,11 @@ namespace API_ShoesShop.Application.Services
                 new Claim(JwtRegisteredClaimNames.Sub,user.Id),
                 new Claim("Username",user.UserName),
                 new Claim(JwtRegisteredClaimNames.Exp, expireTime.ToString()),
-                new Claim("email_confirm",user.EmailConfirmed.ToString())
+                new Claim("email_confirm",user.EmailConfirmed.ToString()),
+                new Claim("Email",user.Email),
+                new Claim("Phone",user.PhoneNumber),
+                new Claim("Address",user.Address)
+
             };
             foreach (var role in roles)
             {
