@@ -13,14 +13,14 @@ namespace ShoesShop.Domain.Entities
         public float BasePrice { get; set; } 
         public string? Image { get; set; }
 
-        public int BrandId { get; set; }
-        [ForeignKey("BrandId")]
-        [JsonIgnore]
+        public int BrandID { get; set; }
+        [ForeignKey("BrandID")]
+
         public Brand Brand { get; set; }
 
-        public int CateId { get; set; }
-        [ForeignKey("CateId")]
-        [JsonIgnore]
+        public int CateID { get; set; }
+        [ForeignKey("CateID")]
+
         public Category Category { get; set; }
         public ICollection<ProductDetail> ProductDetails { get; set; }
 

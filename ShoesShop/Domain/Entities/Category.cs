@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace ShoesShop.Domain.Entities
 {
@@ -10,6 +11,7 @@ namespace ShoesShop.Domain.Entities
 
         public bool IsActive { get; set; }
 
+        [JsonIgnore]
         public ICollection<Product> Products { get; set; } = new List<Product>();
     }
 }

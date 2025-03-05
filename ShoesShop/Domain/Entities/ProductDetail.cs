@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace ShoesShop.Domain.Entities
 {
@@ -8,6 +9,8 @@ namespace ShoesShop.Domain.Entities
 
         [ForeignKey("Product")]
         public int ProductId { get; set; }
+
+        [JsonIgnore]
         public Product Product { get; set; }
         [ForeignKey("Color")]
         public int ColorId { get; set; }
