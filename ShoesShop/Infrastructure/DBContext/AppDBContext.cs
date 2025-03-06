@@ -16,7 +16,8 @@ namespace API_ShoesShop.Infrastructure.DBContext
         public DbSet<Brand> Brands { get; set; }
         public DbSet<Color> Colors { get; set; }
         public DbSet<Size> Sizes { get; set; }
-
+        public DbSet<Cart> Carts { get; set; }
+        public DbSet<CartItem> CartItems { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<ProductDetail> ProductDetails { get; set; }
@@ -32,6 +33,24 @@ namespace API_ShoesShop.Infrastructure.DBContext
                 .HasOne(pd => pd.Size)
                 .WithMany()
                 .HasForeignKey(pd => pd.SizeId);
+
+            modelBuilder.Entity<Cart>()
+               .HasOne(c => c.User)
+               .WithMany()
+               .HasForeignKey(c => c.UserId)
+               .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<CartItem>()
+               .HasOne(ci => ci.Cart)
+               .WithMany(c => c.CartItems)
+               .HasForeignKey(ci => ci.CartId)
+               .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<CartItem>()
+                .HasOne(ci => ci.ProductDetail)
+                .WithMany()
+                .HasForeignKey(ci => ci.ProductDetailId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
 
     }

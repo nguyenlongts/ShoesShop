@@ -3,6 +3,7 @@ using API_ShoesShop.Application.Services;
 using API_ShoesShop.Domain.Entities;
 using API_ShoesShop.Infrastructure.DBContext;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -47,6 +48,9 @@ builder.Services.AddSwaggerGen(options =>
 });
 builder.Services.AddScoped<IGenericRepository<Color>, GenericRepository<Color>>();
 builder.Services.AddScoped<IColorRepository, ColorRepository>();
+builder.Services.AddScoped<ICartRepository, CartRepository>();
+builder.Services.AddScoped<ICartService, CartService>();
+
 builder.Services.AddScoped<IColorService, ColorService>();
 builder.Services.AddScoped<ISizeRepository, SizeRepository>();
 builder.Services.AddScoped<IGenericRepository<Size>, GenericRepository<Size>>();
