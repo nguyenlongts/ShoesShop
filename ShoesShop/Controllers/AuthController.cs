@@ -5,6 +5,7 @@ using API_ShoesShop.Domain.Entities;
 using API_ShoesShop.Infrastructure.DBContext;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using ShoesShop.Application.Interfaces.Services;
 
 namespace API_ShoesShop.Controllers
 {
@@ -12,10 +13,12 @@ namespace API_ShoesShop.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly TokenService _tokenService;
-        public AuthController(UserManager<ApplicationUser> userManager, TokenService tokenService)
+        private readonly ICartService _cartService;
+        public AuthController(UserManager<ApplicationUser> userManager, TokenService tokenService, ICartService cartService)
         {
             _userManager = userManager;
             _tokenService = tokenService;
+            _cartService = cartService;
         }
         [HttpOptions("register")]
         public IActionResult Preflight()
@@ -38,20 +41,21 @@ namespace API_ShoesShop.Controllers
                 DoB = model.DoB,
                 PhoneNumber = model.Phone,
                 Gender = model.Gender,
-                LastName=model.LastName,
-                FirstName=model.FirstName
+                LastName = model.LastName,
+                FirstName = model.FirstName
             };
             var result = await _userManager.CreateAsync(user, model.Password);
-
-            if (!result.Succeeded)
+            var userId = new Guid(user.Id);
+            var createCart =await _cartService.CreateAsync(userId);
+            if (!result.Succeeded || createCart == false)
                 return BadRequest(result.Errors);
 
             return Ok(new { message = "Registration successful!" });
-            }
+        }
 
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDTO model)
-            {
+        {
             var user = await _userManager.FindByNameAsync(model.Username);
             if (user == null)
             {
@@ -63,7 +67,7 @@ namespace API_ShoesShop.Controllers
                 return Unauthorized("Invalid password");
             }
             var token = await _tokenService.GenerateToken(user);
-    
+
             var response = new LoginResponse
             {
                 Token = token
