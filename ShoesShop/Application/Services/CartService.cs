@@ -27,9 +27,17 @@ namespace ShoesShop.Application.Services
             return _cartRepository.CreateAsync(userId);
         }
 
-        public Task<Cart?> GetByUserIdAsync(Guid userId)
+        public async Task<IEnumerable<CartItemDTO>> GetAllCartItem(Guid userId)
         {
-            throw new NotImplementedException();
+            var cart = await _cartRepository.GetCartByUserId(userId);
+            var cartItems = await _cartRepository.GetAllCartItem(cart.CartId);
+            return cartItems;
+        }
+
+        public async Task<Cart?> GetByUserIdAsync(Guid userId)
+        {
+            var cart = await _cartRepository.GetCartByUserId(userId);
+            return cart;
         }
 
         public Task<decimal> GetTotalPriceAsync(Guid userId)

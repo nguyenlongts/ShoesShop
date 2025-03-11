@@ -13,5 +13,6 @@ namespace ShoesShop.Application.Interfaces.Services
         Task<bool> ClearCartAsync(Guid userId);
         Task<decimal> GetTotalPriceAsync(Guid userId);
 
+        Task<IEnumerable<CartItemDTO>> GetAllCartItem(Guid userId);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace ShoesShop.Domain.Entities
 {
@@ -6,8 +7,9 @@ namespace ShoesShop.Domain.Entities
     {
         [Key]
         public int CartItemId { get; set; }
-
+        [JsonIgnore]
         public Guid CartId { get; set; }
+        [JsonIgnore]
         public Cart Cart { get; set; }
 
         public int ProductDetailId {  get; set; }

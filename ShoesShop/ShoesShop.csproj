@@ -28,4 +28,12 @@
     <Folder Include="Migrations\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <EditorConfigFiles Remove="D:\Web API\ShoesShop\ShoesShop\Application\DTOs\.editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="D:\Web API\ShoesShop\ShoesShop\Application\DTOs\.editorconfig" />
+  </ItemGroup>
+
 </Project>

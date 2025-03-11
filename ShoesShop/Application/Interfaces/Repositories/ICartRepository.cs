@@ -1,4 +1,5 @@
-﻿using ShoesShop.Domain.Entities;
+﻿using ShoesShop.Application.DTOs;
+using ShoesShop.Domain.Entities;
 
 namespace ShoesShop.Application.Interfaces.Repositories
 {
@@ -14,7 +15,7 @@ namespace ShoesShop.Application.Interfaces.Repositories
 
         Task<bool> ClearCartAsync(Guid userId);
 
-
+        Task<IEnumerable<CartItemDTO>> GetAllCartItem(Guid cartId);
 
     }
 }

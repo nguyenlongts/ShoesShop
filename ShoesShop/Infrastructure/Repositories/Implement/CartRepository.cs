@@ -1,5 +1,7 @@
-﻿using API_ShoesShop.Infrastructure.DBContext;
+﻿using System.Net.WebSockets;
+using API_ShoesShop.Infrastructure.DBContext;
 using Microsoft.EntityFrameworkCore;
+using ShoesShop.Application.DTOs;
 using ShoesShop.Application.Interfaces.Repositories;
 using ShoesShop.Domain.Entities;
 
@@ -58,9 +60,29 @@ namespace ShoesShop.Infrastructure.Repositories.Implement
             return false;
         }
 
-        public Task<Cart> GetCartByUserId(Guid userId)
+        public async Task<IEnumerable<CartItemDTO>> GetAllCartItem(Guid cartId)
         {
-            throw new NotImplementedException();
+            var cartItems =await _context.CartItems.Include(ci=>ci.ProductDetail)
+                .ThenInclude(pd=>pd.Size)
+                .Include(ci=>ci.ProductDetail)
+                .ThenInclude(pd=>pd.Color)
+                .Where(ci => ci.CartId == cartId)
+                .ToListAsync();
+            return cartItems.Select(ci => new CartItemDTO
+            {
+                CartItemId = ci.CartItemId,
+                SizeName = ci.ProductDetail?.Size?.Name,
+                ColorName = ci.ProductDetail?.Color?.Name,
+                Price = ci.ProductDetail?.Price ?? 0,
+                Quantity = ci.Quantity,
+                ImageUrl = ci.ProductDetail.ImageUrl
+            }).ToList();
+        }
+
+        public async Task<Cart> GetCartByUserId(Guid userId)
+        {
+            var cart = await _context.Carts.FirstOrDefaultAsync(c=>c.UserId==userId.ToString());
+            return cart;
         }
 
         public async Task<bool> RemoveFromCartAsync(Guid userId, int ProductDetailId)

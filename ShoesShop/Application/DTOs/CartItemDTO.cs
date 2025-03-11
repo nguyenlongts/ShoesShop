@@ -1,0 +1,15 @@
+﻿namespace ShoesShop.Application.DTOs
+{
+    public class CartItemDTO
+    {
+        public int CartItemId { get; set; }
+        public string SizeName { get; set; }
+        public string ColorName { get; set; }
+        public decimal Price { get; set; }
+        public int Quantity { get; set; }
+        public decimal Total => Quantity * Price;
+
+        public string ImageUrl { get; set; }
+    }
+
+}
