@@ -7,6 +7,6 @@
         public int SizeID { get; set; }
         public int Quantity { get; set; }
         public decimal Price { get; set; }
-        public List<string> ImageUrls { get; set; }
+        public IFormFile Images { get; set; }
     }
 }

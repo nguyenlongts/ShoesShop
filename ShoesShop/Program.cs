@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using ShoesShop.Application.Interfaces.Repositories;
@@ -46,11 +47,12 @@ builder.Services.AddSwaggerGen(options =>
         }
     });
 });
+
 builder.Services.AddScoped<IGenericRepository<Color>, GenericRepository<Color>>();
 builder.Services.AddScoped<IColorRepository, ColorRepository>();
 builder.Services.AddScoped<ICartRepository, CartRepository>();
 builder.Services.AddScoped<ICartService, CartService>();
-
+builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddScoped<IColorService, ColorService>();
 builder.Services.AddScoped<ISizeRepository, SizeRepository>();
 builder.Services.AddScoped<IGenericRepository<Size>, GenericRepository<Size>>();
@@ -103,6 +105,11 @@ builder.Services.AddAuthentication(options =>
     };
 });
 var app = builder.Build();
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "Uploads")),
+    RequestPath = "/Uploads"
+});
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

@@ -81,7 +81,7 @@ namespace ShoesShop.Infrastructure.Repositories.Implement
 
         public async Task<Cart> GetCartByUserId(Guid userId)
         {
-            var cart = await _context.Carts.FirstOrDefaultAsync(c=>c.UserId==userId.ToString());
+            var cart = await _context.Carts.Include(c=>c.CartItems).ThenInclude(ci => ci.ProductDetail).FirstOrDefaultAsync(c=>c.UserId==userId.ToString());
             return cart;
         }
 
