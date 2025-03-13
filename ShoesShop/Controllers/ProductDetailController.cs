@@ -15,7 +15,7 @@ namespace ShoesShop.Controllers
     {
         private readonly AppDBContext _context;
         private readonly IFileService _fileService;
-        public ProductDetailController(AppDBContext context,  IFileService fileService)
+        public ProductDetailController(AppDBContext context, IFileService fileService)
         {
             _context = context;
             _fileService = fileService;
@@ -25,8 +25,8 @@ namespace ShoesShop.Controllers
         {
             var productDetails = await _context.ProductDetails
                 .Where(pd => pd.ProductId == productId)
-                .Include(pd => pd.Color) // Load bảng Color
-                .Include(pd => pd.Size)  // Load bảng Size
+                .Include(pd => pd.Color)
+                .Include(pd => pd.Size)
                 .Select(pd => new
                 {
                     pd.ProductDetailId,
@@ -49,12 +49,16 @@ namespace ShoesShop.Controllers
             return Ok(productDetails);
         }
 
-
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetVariantById(int id)
+        {
+            return Ok(await _context.ProductDetails.FindAsync(id));
+        }
 
         [HttpPost]
         public async Task<IActionResult> CreateProductDetail([FromForm] CreateProductDetailDTO model)
         {
-            
+
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
@@ -70,36 +74,11 @@ namespace ShoesShop.Controllers
 
             if (exists)
                 return BadRequest($"Biến thể đã tồn tại.");
-            //List<string> fileUrls = new List<string>();
-
-            //if (model.Images != null && model.Images.Count > 0)
-            //{
-            //    if (model.Images.Count > 3)
-            //        return BadRequest("Bạn chỉ được tải lên tối đa 3 ảnh!");
-
-            //    var uploadsFolder = Path.Combine(_env.WebRootPath, "uploads");
-
-            //    if (!Directory.Exists(uploadsFolder))
-            //        Directory.CreateDirectory(uploadsFolder);
-
-            //    foreach (var image in model.Images)
-            //    {
-            //        string fileName = Guid.NewGuid().ToString() + Path.GetExtension(image.FileName);
-            //        var filePath = Path.Combine(uploadsFolder, fileName);
-
-            //        using (var stream = new FileStream(filePath, FileMode.Create))
-            //        {
-            //            await image.CopyToAsync(stream);
-            //        }
-
-            //        fileUrls.Add($"/uploads/{fileName}");
-            //    }
-            //}
             if (model.Images?.Length > 1 * 2048 * 2048)
             {
                 return StatusCode(StatusCodes.Status400BadRequest, "File size should not exceed 1 MB");
             }
-            string[] allowedFileExtentions = [".jpg", ".jpeg", ".png",".PNG"];
+            string[] allowedFileExtentions = [".jpg", ".jpeg", ".png", ".PNG"];
             string createdImageName = await _fileService.SaveFileAsync(model.Images, allowedFileExtentions);
 
             var productDetail = new ProductDetail
@@ -111,14 +90,9 @@ namespace ShoesShop.Controllers
                 Price = model.Price,
                 ImageUrl = createdImageName
             };
-
-
             _context.ProductDetails.Add(productDetail);
             await _context.SaveChangesAsync();
-
             return Ok(new { message = "Thêm biến thể thành công!", productDetail });
-
-
         }
     }
 }

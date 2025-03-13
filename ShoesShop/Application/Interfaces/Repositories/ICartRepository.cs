@@ -11,7 +11,7 @@ namespace ShoesShop.Application.Interfaces.Repositories
         Task<bool> AddToCartAsync(Guid userId, int ProductDetailId, int quantity);
         Task<bool> RemoveFromCartAsync(Guid userId, int ProductDetailId);
 
-        Task<bool> UpdateQuantityAsync(Guid userId, int ProductDetailId, int newQuantity);
+        Task<bool> UpdateQuantityAsync(Guid userId, int cartItemId, int newQuantity);
 
         Task<bool> ClearCartAsync(Guid userId);
 

@@ -50,9 +50,9 @@ namespace ShoesShop.Application.Services
             throw new NotImplementedException();
         }
 
-        public Task<bool> UpdateQuantityAsync(Guid userId, int productDetailId, int newQuantity)
+        public async Task<bool> UpdateQuantityAsync(Guid userId, int cartItemId, int newQuantity)
         {
-            throw new NotImplementedException();
+            return await _cartRepository.UpdateQuantityAsync(userId, cartItemId, newQuantity);
         }
     }
 }

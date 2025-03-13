@@ -71,6 +71,7 @@ namespace ShoesShop.Infrastructure.Repositories.Implement
             return cartItems.Select(ci => new CartItemDTO
             {
                 CartItemId = ci.CartItemId,
+                MaxQuantity = ci.ProductDetail.StockQuantity,
                 SizeName = ci.ProductDetail?.Size?.Name,
                 ColorName = ci.ProductDetail?.Color?.Name,
                 Price = ci.ProductDetail?.Price ?? 0,
@@ -101,9 +102,20 @@ namespace ShoesShop.Infrastructure.Repositories.Implement
 
         }
 
-        public Task<bool> UpdateQuantityAsync(Guid userId, int ProductDetailId, int newQuantity)
+        public async Task<bool> UpdateQuantityAsync(Guid userId, int cartItemId, int newQuantity)
         {
-            throw new NotImplementedException();
+            var cart = await _context.Carts.Include(c => c.CartItems).FirstOrDefaultAsync(c => c.UserId == userId.ToString());
+            foreach (var cartItem in cart.CartItems)
+            {
+                if(cartItem.CartItemId == cartItemId)
+                {
+                    cartItem.Quantity = newQuantity;
+                    await _context.SaveChangesAsync();
+                    return true;
+                    
+                }
+            }
+            return false;
         }
     }
 }

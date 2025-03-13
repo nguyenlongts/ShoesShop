@@ -41,5 +41,10 @@ namespace ShoesShop.Controllers
         {
             return Ok(await _cartService.GetAllCartItem(userId));
         }
+        [HttpPost("UpdateQuantity/{cartItemId}")]
+        public async Task<IActionResult> UpdateQuantity ([FromBody]UpdateCIRequest request)
+        {
+            return Ok(await _cartService.UpdateQuantityAsync(request.UserId, request.CartItemId, request.Quantity));
+        }
     }
 }
