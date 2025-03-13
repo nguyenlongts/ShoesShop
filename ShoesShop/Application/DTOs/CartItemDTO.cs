@@ -3,6 +3,7 @@
     public class CartItemDTO
     {
         public int CartItemId { get; set; }
+        public int MaxQuantity { get; set; }
         public string SizeName { get; set; }
         public string ColorName { get; set; }
         public decimal Price { get; set; }
