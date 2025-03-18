@@ -18,10 +18,15 @@ namespace ShoesShop.Infrastructure.Repositories.Implement
         public async Task<bool> AddToCartAsync(Guid userId, int ProductDetailId, int quantity)
         {
             var cart = await _context.Carts.Include(c => c.CartItems).FirstOrDefaultAsync(c => c.UserId == userId.ToString());
+            var variant =await _context.ProductDetails.FindAsync(ProductDetailId);
             var existCartItem =  cart.CartItems.FirstOrDefault(ci=>ci.ProductDetailId==ProductDetailId);
             if (existCartItem != null)
             {
                 existCartItem.Quantity += quantity;
+                if (existCartItem.Quantity > variant.StockQuantity)
+                {
+                    return false;
+                }
             }
             else
             {
@@ -70,6 +75,7 @@ namespace ShoesShop.Infrastructure.Repositories.Implement
                 .ToListAsync();
             return cartItems.Select(ci => new CartItemDTO
             {
+                ProductId = ci.ProductDetail.ProductId,
                 CartItemId = ci.CartItemId,
                 MaxQuantity = ci.ProductDetail.StockQuantity,
                 SizeName = ci.ProductDetail?.Size?.Name,

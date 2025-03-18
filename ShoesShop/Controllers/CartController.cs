@@ -23,7 +23,7 @@ namespace ShoesShop.Controllers
             {
                 return Ok("Thêm thành công");
             }
-            return BadRequest("Thêm thất bại");
+            return Ok("Thêm thất bại");
         }
 
         [HttpGet("GetCartById/{id}")]
