@@ -28,6 +28,16 @@ namespace ShoesShop.Controllers
             }
             return BadRequest("Get Failed");
         }
+        [HttpGet("GetCustomerProduct")]
+        public async Task<IActionResult> GetHomeProduct(int pageSize = 5, int pageNum = 1)
+        {
+            var response = await _productService.GetProductsCustomerAsync(pageSize, pageNum);
+            if (response != null)
+            {
+                return Ok(response);
+            }
+            return BadRequest("Get Failed");
+        }
         [HttpGet("GetByID")]
         public async Task<IActionResult> GetByID(int id)
         {

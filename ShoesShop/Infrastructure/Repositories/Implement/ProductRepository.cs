@@ -91,9 +91,33 @@ namespace ShoesShop.Infrastructure.Repositories.Implement
             return await (_context.Products.FirstOrDefaultAsync(p => p.Name == name));
         }
 
-        async Task<IEnumerable<Product>> IProductRepository.GetProductsCustomerAsync()
+        async Task<ProductResponseDTO> IProductRepository.GetProductsCustomerAsync(int pageSize, int pageNum)
         {
-            return await _context.Products.Where(p => p.IsActive == true).ToListAsync();
+            int totalProducts = await _context.Products.CountAsync();
+            var products = await _context.Products
+                .Include(p => p.Brand)
+                .Include(p => p.Category)
+                .Include(p=>p.ProductDetails)
+                .Skip((pageNum - 1) * pageSize)
+                .Take(pageSize)
+                .Select(p => new GetProductDTO
+                {
+                    ProductId = p.ProductId,
+                    Name = p.Name,
+                    Description = p.Description,
+                    BasePrice = (decimal)p.BasePrice,
+                    Image = p.ProductDetails.Select(pd => pd.ImageUrl).FirstOrDefault(),
+                    BrandName = p.Brand.Name,
+                    CategoryName = p.Category.Name,
+                    IsActive = p.IsActive
+                }).ToListAsync();
+            int totalPages = (int)Math.Ceiling((decimal)totalProducts / pageSize);
+            return new ProductResponseDTO
+            {
+                TotalPages = totalPages,
+                TotalProducts = totalProducts,
+                Products = products
+            };
         }
 
         async Task<bool> IProductRepository.UpdateAsync(Product product)

@@ -40,9 +40,9 @@ namespace ShoesShop.Application.Services
             return await _productRepository.GetProductByNameAsync(name);
         }
 
-        async Task<IEnumerable<Product>> IProductService.GetProductsCustomerAsync()
+        async Task<ProductResponseDTO> IProductService.GetProductsCustomerAsync(int pageSize, int pageNum)
         {
-            return await _productRepository.GetProductsCustomerAsync();
+            return await _productRepository.GetProductsCustomerAsync(pageSize,pageNum);
         }
 
         async Task<bool> IProductService.UpdateAsync(Product product)
