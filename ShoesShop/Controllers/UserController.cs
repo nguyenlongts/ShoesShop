@@ -20,7 +20,11 @@ namespace ShoesShop.Controllers
         public async Task<IActionResult> GetAll(int pageSize = 5,int pageNum = 1) {
             return Ok(await _userService.GetAllAsync(pageSize, pageNum));
         }
-
+        [HttpGet("UserInfo/{id}")]
+        public async Task<IActionResult> UserInfo(Guid id)
+        {
+            return Ok(await _userService.UserInfo(id));
+        }
         [Authorize]
         [HttpPut("UpdateStatus")]
         public async Task<IActionResult> UpdateStatus(Guid id)
