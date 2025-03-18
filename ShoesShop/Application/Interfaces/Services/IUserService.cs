@@ -1,4 +1,5 @@
 ﻿using API_ShoesShop.Domain.Entities;
+using ShoesShop.Application.DTOs;
 
 namespace ShoesShop.Application.Interfaces.Services
 {
@@ -12,6 +13,7 @@ namespace ShoesShop.Application.Interfaces.Services
 
         Task<bool> DeleteAsync(Guid id);
 
+        Task<UserInfoResponse> UserInfo(Guid id);
         Task<bool> UpdateStatusAsync(Guid userID);
     }
 }
