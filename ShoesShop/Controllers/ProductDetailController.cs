@@ -74,12 +74,12 @@ namespace ShoesShop.Controllers
 
             if (exists)
                 return BadRequest($"Biến thể đã tồn tại.");
-            if (model.Images?.Length > 1 * 2048 * 2048)
+            if (model.Image?.Length > 1 * 2048 * 2048)
             {
                 return StatusCode(StatusCodes.Status400BadRequest, "File size should not exceed 1 MB");
             }
             string[] allowedFileExtentions = [".jpg", ".jpeg", ".png", ".PNG"];
-            string createdImageName = await _fileService.SaveFileAsync(model.Images, allowedFileExtentions);
+            string createdImageName = await _fileService.SaveFileAsync(model.Image, allowedFileExtentions);
 
             var productDetail = new ProductDetail
             {
