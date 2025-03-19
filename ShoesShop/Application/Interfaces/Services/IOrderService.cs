@@ -1,0 +1,23 @@
+﻿using ShoesShop.Domain.Entities;
+using static ShoesShop.Domain.Entities.Order;
+
+namespace ShoesShop.Application.Interfaces.Services
+{
+    public interface IOrderService
+    {
+        Task<bool> CreateOrderAsync(Order order);
+
+ 
+        Task<IEnumerable<Order>> GetAllOrdersAsync(int pageNum, int pageSize);
+
+        Task<Order?> GetOrderByIdAsync(Guid orderId);
+
+        Task<bool> UpdateOrderStatusAsync(Guid orderId, OrderStatus newStatus);
+
+
+        Task<bool> DeleteOrderAsync(Guid orderId);
+
+
+        Task<IEnumerable<Order>> GetOrdersByUserAsync(string userId, int pageNum, int pageSize);
+    }
+}
