@@ -1,5 +1,6 @@
 ﻿using API_ShoesShop.Infrastructure.DBContext;
 using Microsoft.EntityFrameworkCore;
+using ShoesShop.Application.DTOs;
 using ShoesShop.Application.Interfaces.Repositories;
 using ShoesShop.Domain.Entities;
 
@@ -53,11 +54,56 @@ namespace ShoesShop.Infrastructure.Repositories.Implement
             return result;
         }
 
-        public async Task<IEnumerable<Order>> GetOrdersByUserIdAsync(string userId)
+        public async Task<ResponseDTO<CustomerOrderResponse>> GetOrdersByUserIdAsync(string userId, int pageNum, int pageSize)
         {
-            var result = await _context.Orders.Where(o => o.UserId == userId).ToListAsync();
+            var query = _context.Orders
+                .Include(o => o.OrderItems)
+                    .ThenInclude(oi => oi.ProductDetail)
+                        .ThenInclude(pd => pd.Color)
+                .Include(o => o.OrderItems)
+                    .ThenInclude(oi => oi.ProductDetail)
+                        .ThenInclude(pd => pd.Size)
+                .Include(o => o.OrderItems)
+                    .ThenInclude(oi => oi.ProductDetail)
+                        .ThenInclude(pd => pd.Product)
+                .Where(o => o.UserId == userId);
+
+            int totalItems = await query.CountAsync();  // Tổng số đơn hàng
+            int totalPages = (int)Math.Ceiling((double)totalItems / pageSize); // Tổng số trang
+
+            var ordersById = await query
+                .OrderByDescending(o => o.CreateAt)  // Sắp xếp theo thời gian đặt hàng mới nhất
+                .Skip((pageNum - 1) * pageSize)   
+                .Take(pageSize)                      // Lấy số đơn hàng theo pageSize
+                .ToListAsync();
+
+            var result = new ResponseDTO<CustomerOrderResponse>
+            {
+                Items = ordersById.Select(order => new CustomerOrderResponse
+                {
+                    OrderId = order.OrderId.ToString(),
+                    UserId = order.UserId,
+                    OrderDate = order.CreateAt,
+                    TotalPrice = order.OrderItems.Sum(oi => oi.Quantity * oi.UnitPrice),
+                    OrderItems = order.OrderItems.Select(oi => new OrderItemDetail
+                    {
+                        ProductName = oi.ProductDetail.Product.Name,
+                        Quantity = oi.Quantity,
+                        Total= oi.Quantity*oi.UnitPrice,
+                        UnitPrice = oi.UnitPrice,
+                        ColorName = oi.ProductDetail.Color.Name,
+                        SizeName = oi.ProductDetail.Size.Name,
+                        Image = oi.ProductDetail.Product.Image
+                    }).ToList()
+                }).ToList(),
+                TotalItems = totalItems,
+                TotalPages = totalPages
+            };
+
             return result;
         }
+
+
 
         public Task<bool> OrderExistsAsync(Guid orderId)
         {
@@ -74,5 +120,6 @@ namespace ShoesShop.Infrastructure.Repositories.Implement
             var result = await _context.SaveChangesAsync();
             return result > 0;
         }
+
     }
 }
