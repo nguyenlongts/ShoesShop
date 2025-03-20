@@ -82,7 +82,8 @@ namespace ShoesShop.Infrastructure.Repositories.Implement
                 ColorName = ci.ProductDetail?.Color?.Name,
                 Price = ci.ProductDetail?.Price ?? 0,
                 Quantity = ci.Quantity,
-                ImageUrl = ci.ProductDetail.ImageUrl
+                ImageUrl = ci.ProductDetail.ImageUrl,
+                ProductDetailId=ci.ProductDetail.ProductDetailId
             }).ToList();
         }
 
