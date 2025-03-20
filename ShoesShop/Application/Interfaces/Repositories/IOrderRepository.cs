@@ -1,4 +1,5 @@
-﻿using ShoesShop.Domain.Entities;
+﻿using ShoesShop.Application.DTOs;
+using ShoesShop.Domain.Entities;
 
 namespace ShoesShop.Application.Interfaces.Repositories
 {
@@ -8,7 +9,7 @@ namespace ShoesShop.Application.Interfaces.Repositories
         Task<IEnumerable<Order>> GetAllOrdersAsync(int pageNum,int pageSize);
 
 
-        Task<IEnumerable<Order>> GetOrdersByUserIdAsync(string userId);
+        Task<ResponseDTO<CustomerOrderResponse>> GetOrdersByUserIdAsync(string userId,int pageNum,int pageSize);
 
 
         Task<Order> GetOrderByIdAsync(Guid orderId);
