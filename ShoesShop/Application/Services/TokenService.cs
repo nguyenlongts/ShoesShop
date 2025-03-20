@@ -25,7 +25,7 @@ namespace API_ShoesShop.Application.Services
             var expireTime = DateTime.UtcNow.AddHours(3);
             var authClaims = new List<Claim>
             {
-                new Claim(JwtRegisteredClaimNames.Sub,user.Id),
+                new Claim("UserId",user.Id),
                 new Claim("Username",user.UserName),
                 new Claim(JwtRegisteredClaimNames.Exp, expireTime.ToString()),
                 new Claim("email_confirm",user.EmailConfirmed.ToString()),
