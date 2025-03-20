@@ -68,13 +68,13 @@ namespace ShoesShop.Infrastructure.Repositories.Implement
                         .ThenInclude(pd => pd.Product)
                 .Where(o => o.UserId == userId);
 
-            int totalItems = await query.CountAsync();  // Tổng số đơn hàng
-            int totalPages = (int)Math.Ceiling((double)totalItems / pageSize); // Tổng số trang
+            int totalItems = await query.CountAsync();  
+            int totalPages = (int)Math.Ceiling((double)totalItems / pageSize); 
 
             var ordersById = await query
-                .OrderByDescending(o => o.CreateAt)  // Sắp xếp theo thời gian đặt hàng mới nhất
+                .OrderByDescending(o => o.CreateAt) 
                 .Skip((pageNum - 1) * pageSize)   
-                .Take(pageSize)                      // Lấy số đơn hàng theo pageSize
+                .Take(pageSize)                      
                 .ToListAsync();
 
             var result = new ResponseDTO<CustomerOrderResponse>
