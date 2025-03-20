@@ -1,4 +1,5 @@
-﻿using ShoesShop.Application.Interfaces.Repositories;
+﻿using ShoesShop.Application.DTOs;
+using ShoesShop.Application.Interfaces.Repositories;
 using ShoesShop.Application.Interfaces.Services;
 using ShoesShop.Domain.Entities;
 
@@ -32,14 +33,16 @@ namespace ShoesShop.Application.Services
             return _orderRepository.GetOrderByIdAsync(orderId);
         }
 
-        public Task<IEnumerable<Order>> GetOrdersByUserAsync(string userId, int pageNum, int pageSize)
+        public Task<ResponseDTO<CustomerOrderResponse>> GetOrdersByUserAsync(string userId, int pageNum, int pageSize)
         {
-            return _orderRepository.GetOrdersByUserIdAsync(userId);
+            return _orderRepository.GetOrdersByUserIdAsync(userId,pageNum,pageSize);
         }
 
         public Task<bool> UpdateOrderStatusAsync(Guid orderId, Order.OrderStatus newStatus)
         {
             return _orderRepository.UpdateOrderStatusAsync(orderId, newStatus);
         }
+
+        
     }
 }
