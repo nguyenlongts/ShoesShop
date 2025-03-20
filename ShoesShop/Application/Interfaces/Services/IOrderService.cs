@@ -1,4 +1,5 @@
-﻿using ShoesShop.Domain.Entities;
+﻿using ShoesShop.Application.DTOs;
+using ShoesShop.Domain.Entities;
 using static ShoesShop.Domain.Entities.Order;
 
 namespace ShoesShop.Application.Interfaces.Services
@@ -18,6 +19,6 @@ namespace ShoesShop.Application.Interfaces.Services
         Task<bool> DeleteOrderAsync(Guid orderId);
 
 
-        Task<IEnumerable<Order>> GetOrdersByUserAsync(string userId, int pageNum, int pageSize);
+        Task<ResponseDTO<CustomerOrderResponse>> GetOrdersByUserAsync(string userId, int pageNum, int pageSize);
     }
 }
