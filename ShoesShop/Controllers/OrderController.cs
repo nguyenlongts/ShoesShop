@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Azure.Messaging;
+using Microsoft.AspNetCore.Mvc;
 using ShoesShop.Application.DTOs;
 using ShoesShop.Application.Interfaces.Services;
 using ShoesShop.Domain.Entities;
@@ -40,7 +41,7 @@ namespace ShoesShop.Controllers
 
             var result = await _orderService.CreateOrderAsync(order);
             if (!result) return BadRequest("Không thể tạo đơn hàng.");
-            return Ok("Đơn hàng đã được tạo thành công.");
+            return Ok(order.OrderId);
         }
 
 
