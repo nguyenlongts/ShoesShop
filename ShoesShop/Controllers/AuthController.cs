@@ -1,86 +1,48 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using API_ShoesShop.Application.DTOs;
-using API_ShoesShop.Application.Services;
-using API_ShoesShop.Domain.Entities;
-using API_ShoesShop.Infrastructure.DBContext;
-using Microsoft.AspNetCore.Identity;
+﻿using API_ShoesShop.Application.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using ShoesShop.Application.Interfaces.Services;
 
 namespace API_ShoesShop.Controllers
 {
+    [ApiController]
+    [Route("api/[controller]")]
     public class AuthController : Controller
     {
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly TokenService _tokenService;
-        private readonly ICartService _cartService;
-        public AuthController(UserManager<ApplicationUser> userManager, TokenService tokenService, ICartService cartService)
+        private readonly IAuthService _authService;
+
+        public AuthController(IAuthService authService)
         {
-            _userManager = userManager;
-            _tokenService = tokenService;
-            _cartService = cartService;
-        }
-        [HttpOptions("register")]
-        public IActionResult Preflight()
-        {
-            Response.Headers.Add("Access-Control-Allow-Origin", "*");
-            Response.Headers.Add("Access-Control-Allow-Methods", "POST, OPTIONS");
-            Response.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Authorization");
-            return Ok();
+            _authService = authService;
         }
 
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterDTO model)
         {
-            var user = new ApplicationUser
-            {
-                UserName = model.UserName,
-                PasswordHash = model.Password,
-                Address = model.Address,
-                Email = model.Email,
-                DoB = model.DoB,
-                PhoneNumber = model.Phone,
-                Gender = model.Gender,
-                LastName = model.LastName,
-                FirstName = model.FirstName
-            };
-            var result = await _userManager.CreateAsync(user, model.Password);
-            var userId = new Guid(user.Id);
-            var createCart =await _cartService.CreateAsync(userId);
-            if (!result.Succeeded || createCart == false)
-                return BadRequest(result.Errors);
+            var (success, message) = await _authService.RegisterAsync(model);
+            if (!success)
+                return BadRequest(new { message });
 
-            return Ok(new { message = "Registration successful!" });
+            return Ok(new { message });
         }
 
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDTO model)
         {
-            var user = await _userManager.FindByNameAsync(model.Username);
-            if (user == null)
-            {
-                return NotFound();
-            }
-            var result = await _userManager.CheckPasswordAsync(user, model.Password);
-            if (!result)
-            {
-                return Unauthorized("Invalid password");
-            }
-            var token = await _tokenService.GenerateToken(user);
+            var (success, token, message) = await _authService.LoginAsync(model);
+            if (!success)
+                return Unauthorized(new { message });
 
-            var response = new LoginResponse
-            {
-                Token = token
-            };
-            return Ok(response);
+            return Ok(new { token, message });
         }
 
-        [HttpPost("logout")]
-        public IActionResult Logout()
+        [HttpGet("confirm-email")]
+        public async Task<IActionResult> ConfirmEmail(string userId, string token)
         {
-            Response.Cookies.Delete("jwtToken");
-            return Ok(new { message = "Logged out successfully" });
-        }
+            var success = await _authService.ConfirmEmailAsync(userId, token);
+            if (!success)
+                return BadRequest("Email confirmation failed.");
 
+            return Ok("Email confirmed successfully!");
+        }
     }
 }
