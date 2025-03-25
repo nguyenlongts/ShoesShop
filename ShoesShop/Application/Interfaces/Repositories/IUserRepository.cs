@@ -10,7 +10,7 @@ namespace ShoesShop.Application.Interfaces.Repositories
         Task<bool> UpdateAsync(ApplicationUser entity);
         Task<bool> DeleteAsync(Guid id);
 
-
+        Task<(bool success, string message)> RegisterAsync(ApplicationUser user, string password);
         Task<bool> UpdateStatusAsync(Guid id);
     }
 }
