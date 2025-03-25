@@ -15,7 +15,7 @@ namespace ShoesShop.Infrastructure.Repositories.Implement
             _context = context;
         }
 
-        public async Task<bool> AddToCartAsync(Guid userId, int ProductDetailId, int quantity)
+        public async Task<bool> AddToCartAsync(string userId, int ProductDetailId, int quantity)
         {
             var cart = await _context.Carts.Include(c => c.CartItems).FirstOrDefaultAsync(c => c.UserId == userId.ToString());
             var variant =await _context.ProductDetails.FindAsync(ProductDetailId);
@@ -42,7 +42,7 @@ namespace ShoesShop.Infrastructure.Repositories.Implement
             return true;
         }
 
-        public async Task<bool> ClearCartAsync(Guid userId)
+        public async Task<bool> ClearCartAsync(string userId)
         {
             var cart = await _context.Carts.Include(c => c.CartItems).FirstOrDefaultAsync(c => c.UserId == userId.ToString());
             foreach (var cartItem in cart.CartItems){
@@ -52,12 +52,12 @@ namespace ShoesShop.Infrastructure.Repositories.Implement
             return true;
         }
 
-        public async Task<bool> CreateAsync(Guid userId)
+        public async Task<bool> CreateAsync(string userId)
         {
-            var existCart = await _context.Carts.FirstOrDefaultAsync(c => c.UserId == userId.ToString());
+            var existCart = await _context.Carts.FirstOrDefaultAsync(c => c.UserId == userId);
             if (existCart == null)
             {
-                var newCart = new Cart { UserId = userId.ToString() };
+                var newCart = new Cart { UserId = userId};
                 _context.Carts.Add(newCart);
                 await _context.SaveChangesAsync();
                 return true;
@@ -65,13 +65,13 @@ namespace ShoesShop.Infrastructure.Repositories.Implement
             return false;
         }
 
-        public async Task<IEnumerable<CartItemDTO>> GetAllCartItem(Guid cartId)
+        public async Task<IEnumerable<CartItemDTO>> GetAllCartItem(string cartId)
         {
             var cartItems =await _context.CartItems.Include(ci=>ci.ProductDetail)
                 .ThenInclude(pd=>pd.Size)
                 .Include(ci=>ci.ProductDetail)
                 .ThenInclude(pd=>pd.Color)
-                .Where(ci => ci.CartId == cartId)
+                .Where(ci => ci.CartId.ToString() == cartId)
                 .ToListAsync();
             return cartItems.Select(ci => new CartItemDTO
             {
@@ -87,13 +87,13 @@ namespace ShoesShop.Infrastructure.Repositories.Implement
             }).ToList();
         }
 
-        public async Task<Cart> GetCartByUserId(Guid userId)
+        public async Task<Cart> GetCartByUserId(string userId)
         {
-            var cart = await _context.Carts.Include(c=>c.CartItems).ThenInclude(ci => ci.ProductDetail).FirstOrDefaultAsync(c=>c.UserId==userId.ToString());
+            var cart = await _context.Carts.Include(c=>c.CartItems).ThenInclude(ci => ci.ProductDetail).FirstOrDefaultAsync(c=>c.UserId==userId);
             return cart;
         }
 
-        public async Task<bool> RemoveFromCartAsync(Guid userId, int ProductDetailId)
+        public async Task<bool> RemoveFromCartAsync(string userId, int ProductDetailId)
         {
             var cart = await _context.Carts.Include(c => c.CartItems).FirstOrDefaultAsync(c => c.UserId == userId.ToString());
             foreach (var cartItem in cart.CartItems)
@@ -109,7 +109,7 @@ namespace ShoesShop.Infrastructure.Repositories.Implement
 
         }
 
-        public async Task<bool> UpdateQuantityAsync(Guid userId, int cartItemId, int newQuantity)
+        public async Task<bool> UpdateQuantityAsync(string userId, int cartItemId, int newQuantity)
         {
             var cart = await _context.Carts.Include(c => c.CartItems).FirstOrDefaultAsync(c => c.UserId == userId.ToString());
             foreach (var cartItem in cart.CartItems)

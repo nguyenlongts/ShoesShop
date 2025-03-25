@@ -81,6 +81,7 @@ namespace ShoesShop.Infrastructure.Repositories.Implement
             {
                 Items = ordersById.Select(order => new CustomerOrderResponse
                 {
+                    Status= order.Status,
                     OrderId = order.OrderId.ToString(),
                     UserId = order.UserId,
                     OrderDate = order.CreateAt,
