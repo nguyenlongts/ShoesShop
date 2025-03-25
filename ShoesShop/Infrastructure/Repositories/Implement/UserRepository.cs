@@ -33,6 +33,19 @@ namespace ShoesShop.Infrastructure.Repositories.Implement
             return _userManager.FindByIdAsync(id.ToString());
         }
 
+        public async Task<(bool success, string message)> RegisterAsync(ApplicationUser user, string password)
+        {
+            var existUser = await _userManager.FindByEmailAsync(user.Email);
+            if (existUser != null)
+                return (false, "Email đã tồn tại!");
+
+            var result = await _userManager.CreateAsync(user, password);
+            if (!result.Succeeded)
+                return (false, "Đăng ký thất bại!");
+
+            return (true, "Đăng ký thành công!");
+        }
+
         public async Task<bool> UpdateAsync(ApplicationUser entity)
         {
             var result = await _userManager.UpdateAsync(entity);
