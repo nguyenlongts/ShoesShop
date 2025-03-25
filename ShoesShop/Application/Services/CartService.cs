@@ -14,45 +14,46 @@ namespace ShoesShop.Application.Services
         }
         public async Task<bool> AddItemAsync(AddToCartRequest request)
         {
-            return await _cartRepository.AddToCartAsync(request.UserId, request.ProductDetailId, request.Quantity);
+            return await _cartRepository.AddToCartAsync(request.UserId.ToString(), request.ProductDetailId, request.Quantity);
         }
 
-        public Task<bool> ClearCartAsync(Guid userId)
+        public async Task<bool> ClearCartAsync(string userId)
         {
-            throw new NotImplementedException();
+            return await _cartRepository.ClearCartAsync(userId);
         }
 
-        public Task<bool> CreateAsync(Guid userId)
+        public Task<bool> CreateAsync(string userId)
         {
             return _cartRepository.CreateAsync(userId);
         }
 
-        public async Task<IEnumerable<CartItemDTO>> GetAllCartItem(Guid userId)
+        public async Task<IEnumerable<CartItemDTO>> GetAllCartItem(string userId)
         {
             var cart = await _cartRepository.GetCartByUserId(userId);
-            var cartItems = await _cartRepository.GetAllCartItem(cart.CartId);
+            var cartItems = await _cartRepository.GetAllCartItem(cart.CartId.ToString());
             return cartItems;
         }
 
-        public async Task<Cart?> GetByUserIdAsync(Guid userId)
+        public async Task<Cart?> GetByUserIdAsync(string userId)
         {
             var cart = await _cartRepository.GetCartByUserId(userId);
             return cart;
         }
 
-        public Task<decimal> GetTotalPriceAsync(Guid userId)
+        public async Task<decimal> GetTotalPriceAsync(string userId)
         {
-            throw new NotImplementedException();
+            var cartItems = await GetAllCartItem(userId);
+            return cartItems.Sum(item => item.Price * item.Quantity);
         }
 
-        public Task<bool> RemoveItemAsync(Guid userId, int productDetailId)
+        public async Task<bool> RemoveItemAsync(string userId, int productDetailId)
         {
-            throw new NotImplementedException();
+            return await _cartRepository.RemoveFromCartAsync(userId, productDetailId);
         }
 
-        public async Task<bool> UpdateQuantityAsync(Guid userId, int cartItemId, int newQuantity)
+        public async Task<bool> UpdateQuantityAsync(string userId, int cartItemId, int newQuantity)
         {
-            return await _cartRepository.UpdateQuantityAsync(userId, cartItemId, newQuantity);
+            return await _cartRepository.UpdateQuantityAsync(userId.ToString(), cartItemId, newQuantity);
         }
     }
 }
