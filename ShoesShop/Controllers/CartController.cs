@@ -27,7 +27,7 @@ namespace ShoesShop.Controllers
         }
 
         [HttpGet("GetCartById/{id}")]
-        public async Task<IActionResult> GetByUserId(Guid id)
+        public async Task<IActionResult> GetByUserId(string id)
         {
             var cart =await _cartService.GetByUserIdAsync(id);
             if (cart == null)
@@ -37,7 +37,7 @@ namespace ShoesShop.Controllers
             return Ok(cart);
         }
         [HttpGet("GetAllCartItems")]
-        public async Task<IActionResult> GetAllCartItems(Guid userId)
+        public async Task<IActionResult> GetAllCartItems(string userId)
         {
             return Ok(await _cartService.GetAllCartItem(userId));
         }
@@ -45,6 +45,28 @@ namespace ShoesShop.Controllers
         public async Task<IActionResult> UpdateQuantity ([FromBody]UpdateCIRequest request)
         {
             return Ok(await _cartService.UpdateQuantityAsync(request.UserId, request.CartItemId, request.Quantity));
+        }
+
+        [HttpDelete("RemoveItem")]
+        public async Task<IActionResult> RemoveItem([FromBody] RemoveCIRequest request)
+        {
+            var result = await _cartService.RemoveItemAsync(request.UserId, request.ProductDetailId);
+            if (result)
+            {
+                return Ok("Xóa sản phẩm khỏi giỏ hàng thành công");
+            }
+            return BadRequest("Xóa sản phẩm khỏi giỏ hàng thất bại");
+        }
+
+        [HttpDelete("ClearCart/{userId}")]
+        public async Task<IActionResult> ClearCart(string userId)
+        {
+            var result = await _cartService.ClearCartAsync(userId);
+            if (result)
+            {
+                return Ok("Xóa toàn bộ giỏ hàng thành công");
+            }
+            return BadRequest("Xóa giỏ hàng thất bại");
         }
     }
 }
