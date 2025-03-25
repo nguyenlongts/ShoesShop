@@ -1,4 +1,6 @@
-﻿namespace ShoesShop.Application.DTOs
+﻿using ShoesShop.Domain.Entities;
+
+namespace ShoesShop.Application.DTOs
 {
     public class CustomerOrderResponse
     {
@@ -7,6 +9,6 @@
         public DateTime OrderDate { get; set; } // Ngày đặt hàng
         public decimal TotalPrice { get; set; } // Tổng tiền đơn hàng
         public List<OrderItemDetail> OrderItems { get; set; }
-        public int Status { get; set; }
+        public Order.OrderStatus Status { get; set; }
     }
 }
