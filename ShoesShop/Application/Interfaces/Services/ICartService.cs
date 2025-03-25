@@ -5,14 +5,14 @@ namespace ShoesShop.Application.Interfaces.Services
 {
     public interface ICartService
     {
-        Task<bool> CreateAsync(Guid userId);
-        Task<Cart?> GetByUserIdAsync(Guid userId);
+        Task<bool> CreateAsync(string userId);
+        Task<Cart?> GetByUserIdAsync(string userId);
         Task<bool> AddItemAsync(AddToCartRequest request);
-        Task<bool> UpdateQuantityAsync(Guid userId, int productDetailId, int newQuantity);
-        Task<bool> RemoveItemAsync(Guid userId, int productDetailId);
-        Task<bool> ClearCartAsync(Guid userId);
-        Task<decimal> GetTotalPriceAsync(Guid userId);
+        Task<bool> UpdateQuantityAsync(string userId, int productDetailId, int newQuantity);
+        Task<bool> RemoveItemAsync(string userId, int productDetailId);
+        Task<bool> ClearCartAsync(string userId);
+        Task<decimal> GetTotalPriceAsync(string userId);
 
-        Task<IEnumerable<CartItemDTO>> GetAllCartItem(Guid userId);
+        Task<IEnumerable<CartItemDTO>> GetAllCartItem(string userId);
     }
 }

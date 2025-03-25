@@ -17,7 +17,7 @@ namespace ShoesShop.Domain.Entities
         public DateTime CreateAt { get; set; } = DateTime.UtcNow;
         public string ShippingAddress { get; set; }
         public OrderStatus Status { get; set; } = OrderStatus.Pending;
-        public enum OrderStatus
+        public enum OrderStatus:int
         {
             Pending,
             Processing,

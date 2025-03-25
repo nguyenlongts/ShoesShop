@@ -5,17 +5,17 @@ namespace ShoesShop.Application.Interfaces.Repositories
 {
     public interface ICartRepository
     {
-        Task<bool> CreateAsync(Guid userId);
+        Task<bool> CreateAsync(string userId);
 
-        Task<Cart> GetCartByUserId(Guid userId);
-        Task<bool> AddToCartAsync(Guid userId, int ProductDetailId, int quantity);
-        Task<bool> RemoveFromCartAsync(Guid userId, int ProductDetailId);
+        Task<Cart> GetCartByUserId(string userId);
+        Task<bool> AddToCartAsync(string userId, int ProductDetailId, int quantity);
+        Task<bool> RemoveFromCartAsync(string userId, int ProductDetailId);
 
-        Task<bool> UpdateQuantityAsync(Guid userId, int cartItemId, int newQuantity);
+        Task<bool> UpdateQuantityAsync(string userId, int cartItemId, int newQuantity);
 
-        Task<bool> ClearCartAsync(Guid userId);
+        Task<bool> ClearCartAsync(string userId);
 
-        Task<IEnumerable<CartItemDTO>> GetAllCartItem(Guid cartId);
+        Task<IEnumerable<CartItemDTO>> GetAllCartItem(string cartId);
 
     }
 }
