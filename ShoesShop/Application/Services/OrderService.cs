@@ -23,7 +23,7 @@ namespace ShoesShop.Application.Services
             return _orderRepository.DeleteOrderAsync(orderId);
         }
 
-        public Task<IEnumerable<Order>> GetAllOrdersAsync(int pageNum, int pageSize)
+        public Task<ResponseDTO<Order>> GetAllOrdersAsync(int pageNum, int pageSize)
         {
             return _orderRepository.GetAllOrdersAsync(pageNum, pageSize);
         }

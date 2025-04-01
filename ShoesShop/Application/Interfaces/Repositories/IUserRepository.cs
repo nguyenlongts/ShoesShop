@@ -1,11 +1,12 @@
 ﻿using API_ShoesShop.Domain.Entities;
+using ShoesShop.Application.DTOs;
 
 namespace ShoesShop.Application.Interfaces.Repositories
 {
     public interface IUserRepository 
     {
         Task<IEnumerable<ApplicationUser>> GetAllAsync(int pageNumber, int pageSize);
-        Task<ApplicationUser> GetByIdAsync(Guid id);
+        Task<UserInfoResponse> GetByIdAsync(Guid id);
 
         Task<bool> UpdateAsync(ApplicationUser entity);
         Task<bool> DeleteAsync(Guid id);

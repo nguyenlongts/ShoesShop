@@ -9,7 +9,7 @@ namespace ShoesShop.Application.Interfaces.Services
         Task<bool> CreateOrderAsync(Order order);
 
  
-        Task<IEnumerable<Order>> GetAllOrdersAsync(int pageNum, int pageSize);
+        Task<ResponseDTO<Order>> GetAllOrdersAsync(int pageNum, int pageSize);
 
         Task<Order?> GetOrderByIdAsync(Guid orderId);
 

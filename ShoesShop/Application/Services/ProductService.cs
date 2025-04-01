@@ -49,5 +49,12 @@ namespace ShoesShop.Application.Services
         {
             return await _productRepository.UpdateAsync(product);
         }
+
+        public async Task<ProductResponseDTO> FilterProducts(List<int>? brandIds, List<int>? sizeIds, List<int>? colorIds, string? priceRange, int page = 1, int pageSize = 10)
+        {
+            var result = await _productRepository.GetFilteredProducts(brandIds,sizeIds,colorIds,priceRange,page,pageSize);
+
+            return (result);
+        }
     }
 }

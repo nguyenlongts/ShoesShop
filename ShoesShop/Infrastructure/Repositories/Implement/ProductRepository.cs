@@ -127,5 +127,80 @@ namespace ShoesShop.Infrastructure.Repositories.Implement
             return result > 0;
 
         }
+
+        public async Task<ProductResponseDTO> GetFilteredProducts(List<int>? brandIds, List<int>? sizeIds, List<int>? colorIds, string? priceRange, int page = 1, int pageSize = 10)
+        {
+            var query = _context.Products
+                .Include(p => p.Brand)
+                .Include(p => p.Category)
+                .Include(p => p.ProductDetails).ThenInclude(pd => pd.Color)
+                .Include(p => p.ProductDetails).ThenInclude(pd => pd.Size)
+                .AsQueryable();
+
+            if (brandIds != null && brandIds.Any())
+            {
+                query = query.Where(p => brandIds.Contains(p.BrandID));
+            }
+
+            if (sizeIds != null && sizeIds.Any())
+            {
+                query = query.Where(p => p.ProductDetails.Any(pd => sizeIds.Contains(pd.SizeId)));
+            }
+
+    
+            if (colorIds != null && colorIds.Any())
+            {
+                query = query.Where(p => p.ProductDetails.Any(pd => colorIds.Contains(pd.ColorId)));
+            }
+
+            if (!string.IsNullOrEmpty(priceRange))
+            {
+                switch (priceRange)
+                {
+                    case "under-1m":
+                        query = query.Where(p => p.BasePrice < 1000000);
+                        break;
+                    case "1m-2m":
+                        query = query.Where(p => p.BasePrice >= 1000000 && p.BasePrice <= 2000000);
+                        break;
+                    case "2m-4m":
+                        query = query.Where(p => p.BasePrice >= 2000000 && p.BasePrice <= 4000000);
+                        break;
+                    case "4m-6m":
+                        query = query.Where(p => p.BasePrice >= 4000000 && p.BasePrice <= 6000000);
+                        break;
+                }
+            }
+
+
+            int totalProducts = await query.CountAsync();
+
+    
+            int totalPages = (int)Math.Ceiling((double)totalProducts / pageSize);
+
+            var products = await query
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(p => new GetProductDTO
+                {
+                    ProductId = p.ProductId,
+                    Name = p.Name,
+                    Description = p.Description,
+                    BasePrice = (decimal)p.BasePrice,
+                    Image = p.ProductDetails.OrderBy(pd => pd.ProductDetailId).Select(pd => pd.ImageUrl).FirstOrDefault(),
+                    BrandName = p.Brand.Name,
+                    CategoryName = p.Category.Name,
+                    IsActive = p.IsActive
+                })
+                .ToListAsync();
+
+            return new ProductResponseDTO
+            {
+                TotalProducts = totalProducts,
+                TotalPages = totalPages,
+                Products = products
+            };
+        }
+
     }
 }

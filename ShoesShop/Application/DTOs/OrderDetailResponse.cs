@@ -11,7 +11,7 @@ namespace ShoesShop.Application.DTOs
         public string ShippingAddress { get; set; }
         public DateTime CreateAt { get; set; }
         public Order.OrderStatus Status { get; set; }
-        public List<OrderItem> OrderItems { get; set; }
+        public List<OrderItemDetail> OrderItems { get; set; }
 
         public decimal TotalPrice { get; set; }
 

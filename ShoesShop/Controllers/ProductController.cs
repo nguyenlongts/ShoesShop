@@ -58,5 +58,19 @@ namespace ShoesShop.Controllers
             }
             return BadRequest("Create failed");
         }
+        [HttpPost("Filter")]
+        public async Task<IActionResult> FilterProducts([FromBody] ProductFilterRequest filter)
+        {
+            var result = await _productService.FilterProducts(
+                filter.Brands,
+                filter.Sizes,
+                filter.Colors,
+                filter.PriceRange,
+                filter.Page,
+                filter.PageSize
+            );
+
+            return Ok(result);
+        }
     }
 }

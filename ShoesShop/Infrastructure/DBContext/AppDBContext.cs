@@ -21,7 +21,7 @@ namespace API_ShoesShop.Infrastructure.DBContext
         public DbSet<Product> Products { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<ProductDetail> ProductDetails { get; set; }
-
+        public DbSet<Address> Addresses { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -54,6 +54,11 @@ namespace API_ShoesShop.Infrastructure.DBContext
                 .WithMany()
                 .HasForeignKey(ci => ci.ProductDetailId)
                 .OnDelete(DeleteBehavior.Restrict);
+           
+            modelBuilder.Entity<Address>()
+                .HasIndex(a => new { a.UserId, a.IsDefault })
+                .IsUnique()
+                .HasFilter("[IsDefault] = 1");
         }
 
     }

@@ -8,13 +8,12 @@ namespace ShoesShop.Application.Interfaces.Services
     {
         Task<IEnumerable<ApplicationUser>> GetAllAsync(int pageSize,int pageNum);
 
-        Task<ApplicationUser> GetByIdAsync(Guid id);
+        Task<UserInfoResponse> GetByIdAsync(Guid id);
 
         Task<bool> UpdateAsync(ApplicationUser user);
 
         Task<bool> DeleteAsync(Guid id);
         Task<(bool success, string message)> RegisterAsync(RegisterDTO model);
-        Task<UserInfoResponse> UserInfo(Guid id);
         Task<bool> UpdateStatusAsync(Guid userID);
     }
 }

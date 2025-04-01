@@ -6,7 +6,7 @@ namespace ShoesShop.Application.Interfaces.Repositories
     public interface IOrderRepository
     {
 
-        Task<IEnumerable<Order>> GetAllOrdersAsync(int pageNum,int pageSize);
+        Task<ResponseDTO<Order>> GetAllOrdersAsync(int pageNum,int pageSize);
 
 
         Task<ResponseDTO<CustomerOrderResponse>> GetOrdersByUserIdAsync(string userId,int pageNum,int pageSize);

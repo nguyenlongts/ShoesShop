@@ -66,28 +66,14 @@ namespace ShoesShop.Application.Services
             return _userRepository.DeleteAsync(id);
         }
 
-        public async Task<UserInfoResponse> UserInfo(Guid id)
-        {
-            var user = await _userRepository.GetByIdAsync(id);
-            if (user == null)
-            {
-                return null;
-            }
-            var response = new UserInfoResponse
-            {
-                Email = user.Email,
-                FullName = user.FirstName + " " + user.LastName,
-                Phone = user.PhoneNumber
-            };
-            return response;
-        }
+        
 
         Task<IEnumerable<ApplicationUser>> IUserService.GetAllAsync(int pageSize, int pageNum)
         {
             return _userRepository.GetAllAsync(pageNum, pageSize);
         }
 
-        Task<ApplicationUser> IUserService.GetByIdAsync(Guid id)
+        Task<UserInfoResponse> IUserService.GetByIdAsync(Guid id)
         {
             return _userRepository.GetByIdAsync(id);
         }

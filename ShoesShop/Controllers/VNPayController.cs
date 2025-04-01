@@ -20,20 +20,20 @@ namespace ShoesShop.Controllers
         [HttpPost("create-payment")]
         public IActionResult CreatePayment([FromBody] PaymentRequest request)
         {
-            // Lấy thông tin cấu hình từ appsettings.json
             string vnp_Url = _configuration["VnPay:PaymentUrl"];
             string vnp_ReturnUrl = _configuration["VnPay:ReturnUrl"];
             string vnp_TmnCode = _configuration["VnPay:TmnCode"];
             string vnp_HashSecret = _configuration["VnPay:HashSecret"];
+            TimeZoneInfo vnTimeZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
+            DateTime vnNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, vnTimeZone);
 
-   
             var vnpParams = new Dictionary<string, string>
             {
                 { "vnp_Version", "2.1.0" },
                 { "vnp_Command", "pay" },
                 { "vnp_TmnCode", vnp_TmnCode },
                 { "vnp_Amount", (request.Amount * 100).ToString() }, 
-                { "vnp_CreateDate", DateTime.Now.ToString("yyyyMMddHHmmss") },
+                { "vnp_CreateDate", vnNow.ToString("yyyyMMddHHmmss") },
                 { "vnp_CurrCode", "VND" },
                 { "vnp_IpAddr", HttpContext.Connection.RemoteIpAddress?.ToString() ?? "127.0.0.1" },
                 { "vnp_Locale", "vn" },

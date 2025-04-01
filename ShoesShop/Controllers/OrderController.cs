@@ -62,13 +62,23 @@ namespace ShoesShop.Controllers
             {
                 OrderId = order.OrderId,
                 UserId = order.UserId,
-                Fullname = order.User.FirstName+" "+order.User.LastName,
+                Fullname = $"{order.User.FirstName} {order.User.LastName}",
                 ShippingAddress = order.ShippingAddress,
                 CreateAt = order.CreateAt,
                 Status = order.Status,
-                OrderItems = order.OrderItems,
-                TotalPrice=order.TotalPrice,
-                PhoneNumber = order.User.PhoneNumber
+                TotalPrice = order.TotalPrice,
+                PhoneNumber = order.User.PhoneNumber,
+                OrderItems = order.OrderItems.Select(oi => new OrderItemDetail
+                {
+                    Quantity = oi.Quantity,
+                    ColorName = oi.ProductDetail.Color.Name,
+                    SizeName = oi.ProductDetail.Size.Name,
+                    UnitPrice = oi.UnitPrice,
+                    Total = oi.Total,
+                    ProductName = oi.ProductDetail.Product.Name,
+                    Image = oi.ProductDetail.ImageUrl
+                }).ToList()
+                
             };
             return Ok(detail);
         }

@@ -36,16 +36,36 @@ namespace ShoesShop.Infrastructure.Repositories.Implement
             return result > 0;
         }
 
-        public async Task<IEnumerable<Order>> GetAllOrdersAsync(int pageNum=1,int pageSize=5)
+        public async Task<ResponseDTO<Order>> GetAllOrdersAsync(int pageNum=1,int pageSize=5)
         {
-            var result = await _context.Orders.OrderByDescending(o=>o.CreateAt).Include(o=>o.OrderItems).Skip((pageNum - 1) * pageSize).Take(pageSize).ToListAsync();
-            return result;
+            int totalOrder = await _context.Orders.CountAsync();
+            var orders = await _context.Orders.OrderByDescending(o=>o.CreateAt)
+                .Include(o=>o.OrderItems)
+                .Skip((pageNum - 1) * pageSize).Take(pageSize)
+                .ToListAsync();
+            int totalPages = (int)Math.Ceiling((decimal)totalOrder / pageSize);
+            return new ResponseDTO<Order>
+            {
+                Items=orders,
+                TotalPages = totalPages,
+                TotalItems = totalOrder
+            };
         }
 
-        public Task<Order> GetOrderByIdAsync(Guid orderId)
+        public async Task<Order> GetOrderByIdAsync(Guid orderId)
         {
-            var existOrder = _context.Orders.Include(o => o.OrderItems).ThenInclude(oi=>oi.ProductDetail).Include(o=>o.User).FirstOrDefaultAsync(o => o.OrderId == orderId);
-            return existOrder;
+            return await _context.Orders
+                .Include(o => o.OrderItems)
+                    .ThenInclude(oi => oi.ProductDetail)
+                        .ThenInclude(pd => pd.Size)
+                .Include(o => o.OrderItems)
+                    .ThenInclude(oi => oi.ProductDetail)
+                        .ThenInclude(pd => pd.Color)
+                .Include(o => o.OrderItems)
+                    .ThenInclude(oi => oi.ProductDetail)
+                        .ThenInclude(pd => pd.Product)
+                .Include(o => o.User)
+                .FirstOrDefaultAsync(o => o.OrderId == orderId);
         }
 
         public async Task<IEnumerable<OrderItem>> GetOrderItemsAsync(Guid orderId)

@@ -23,7 +23,7 @@ namespace ShoesShop.Controllers
         [HttpGet("UserInfo/{id}")]
         public async Task<IActionResult> UserInfo(Guid id)
         {
-            return Ok(await _userService.UserInfo(id));
+            return Ok(await _userService.GetByIdAsync(id));
         }
         [Authorize]
         [HttpPut("UpdateStatus")]
