@@ -1,4 +1,4 @@
-using System.Text;
+ï»¿using System.Text;
 using API_ShoesShop.Application.Services;
 using API_ShoesShop.Domain.Entities;
 using API_ShoesShop.Infrastructure.DBContext;
@@ -91,7 +91,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowAll",
         policy =>
         {
-            policy.AllowAnyOrigin()  // Cho phép t?t c? ngu?n (có th? ??i thành ch? React)
+            policy.AllowAnyOrigin()  
                   .AllowAnyMethod()
                   .AllowAnyHeader();
         });
@@ -110,19 +110,24 @@ builder.Services.AddAuthentication(options =>
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"]))
     };
 });
+string uploadsPath = Path.Combine(Directory.GetCurrentDirectory(), "Uploads");
+if (!Directory.Exists(uploadsPath))
+{
+    Directory.CreateDirectory(uploadsPath);
+}
 var app = builder.Build();
 app.UseStaticFiles(new StaticFileOptions
 {
     FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "Uploads")),
     RequestPath = "/Uploads"
 });
-
+app.UseHttpsRedirection();
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+//if (app.Environment.IsDevelopment())
+//{
+app.UseSwagger();
+app.UseSwaggerUI();
+//}
 app.UseCors("AllowAll");
 
 app.UseHttpsRedirection();
