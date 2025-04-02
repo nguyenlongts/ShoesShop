@@ -27,9 +27,21 @@ namespace ShoesShop.Infrastructure.Repositories.Implement
             return result.Succeeded;
         }
 
-        public async Task<IEnumerable<ApplicationUser>> GetAllAsync(int pageNumber, int pageSize)
+        public async Task<ResponseDTO<AdminUserInfoResponse>> GetAllAsync(int pageNumber, int pageSize)
         {
-            return await _userManager.Users.Skip((pageNumber-1)*pageSize).Take(pageSize).ToListAsync();
+            int totalUser = await _context.Users.CountAsync();
+            var users = await _userManager.Users.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
+            var responseUser =  users.Select(u => new AdminUserInfoResponse 
+            { 
+                Email = u.Email,
+                FullName = $"{u.FirstName} {u.LastName}",
+                Phone = u.PhoneNumber,
+            isActive=u.isActive,
+            UserId=new Guid(u.Id)}).ToList();
+            int totalPages = (int)Math.Ceiling((decimal)totalUser / pageSize);
+            return new ResponseDTO<AdminUserInfoResponse> { Items = responseUser,
+            TotalItems=totalUser,
+            TotalPages = totalPages} ;
         }
 
         public async Task<UserInfoResponse> GetByIdAsync(Guid id)

@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.WebUtilities;
 using ShoesShop.Application.DTOs;
 using ShoesShop.Application.Interfaces.Repositories;
 using ShoesShop.Application.Interfaces.Services;
+using ShoesShop.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
+using API_ShoesShop.Infrastructure.DBContext;
 
 namespace ShoesShop.Application.Services
 {
@@ -15,12 +18,16 @@ namespace ShoesShop.Application.Services
         private readonly ICartService _cartService;
         private readonly IEmailService _emailService;
         private readonly UserManager<ApplicationUser> _userManager;
-        public UserService(IUserRepository userRepository, ICartService cartService, IEmailService emailService, UserManager<ApplicationUser> userManager)
+        private readonly IConfiguration _config;
+        private readonly AppDBContext _context;
+        public UserService(IUserRepository userRepository, ICartService cartService, IEmailService emailService, UserManager<ApplicationUser> userManager, IConfiguration config, AppDBContext context)
         {
             _userRepository = userRepository;
             _cartService = cartService;
             _emailService = emailService;
             _userManager = userManager;
+            _config = config;
+            _context = context;
         }
 
         public async Task<(bool success, string message)> RegisterAsync(RegisterDTO model)
@@ -44,14 +51,22 @@ namespace ShoesShop.Application.Services
             var result = await _userRepository.RegisterAsync(user, model.Password);
             if (!result.success)
                 return (false, "Đăng ký thất bại!");
-
+            var address = new Address
+            {
+                FullAddress = model.Address,
+                UserId = user.Id,
+                IsDefault = true
+            }; 
+            _context.Addresses.Add(address);
+            await _context.SaveChangesAsync();
             var createCart = await _cartService.CreateAsync(user.Id);
             if (!createCart)
                 return (false, "Không thể tạo giỏ hàng!");
 
             var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
             var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
-            var confirmLink = $"http://localhost:5258/api/Auth/confirm-email?userId={user.Id}&token={encodedToken}";
+            var clientUrl = _config["AppSettings:ClientURL"];
+            var confirmLink = $"{clientUrl}/api/Auth/confirm-email?userId={user.Id}&token={encodedToken}";
 
             string subject = "Xác nhận tài khoản";
             string body = $"<p>Nhấp vào link sau để xác nhận tài khoản: <a href='{confirmLink}'>Xác nhận Email</a></p>";
@@ -68,7 +83,7 @@ namespace ShoesShop.Application.Services
 
         
 
-        Task<IEnumerable<ApplicationUser>> IUserService.GetAllAsync(int pageSize, int pageNum)
+        Task<ResponseDTO<AdminUserInfoResponse>> IUserService.GetAllAsync(int pageSize, int pageNum)
         {
             return _userRepository.GetAllAsync(pageNum, pageSize);
         }

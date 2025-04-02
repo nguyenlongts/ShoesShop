@@ -5,7 +5,7 @@ namespace ShoesShop.Application.Interfaces.Repositories
 {
     public interface IUserRepository 
     {
-        Task<IEnumerable<ApplicationUser>> GetAllAsync(int pageNumber, int pageSize);
+        Task<ResponseDTO<AdminUserInfoResponse>> GetAllAsync(int pageNumber, int pageSize);
         Task<UserInfoResponse> GetByIdAsync(Guid id);
 
         Task<bool> UpdateAsync(ApplicationUser entity);

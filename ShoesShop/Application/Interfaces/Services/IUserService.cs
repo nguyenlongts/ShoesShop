@@ -6,7 +6,7 @@ namespace ShoesShop.Application.Interfaces.Services
 {
     public interface IUserService
     {
-        Task<IEnumerable<ApplicationUser>> GetAllAsync(int pageSize,int pageNum);
+        Task<ResponseDTO<AdminUserInfoResponse>> GetAllAsync(int pageSize,int pageNum);
 
         Task<UserInfoResponse> GetByIdAsync(Guid id);
 

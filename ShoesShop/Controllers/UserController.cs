@@ -25,7 +25,7 @@ namespace ShoesShop.Controllers
         {
             return Ok(await _userService.GetByIdAsync(id));
         }
-        [Authorize]
+        //[Authorize]
         [HttpPut("UpdateStatus")]
         public async Task<IActionResult> UpdateStatus(Guid id)
         {
