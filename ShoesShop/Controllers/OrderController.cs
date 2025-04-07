@@ -1,4 +1,5 @@
 ﻿using Azure.Messaging;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ShoesShop.Application.DTOs;
 using ShoesShop.Application.Interfaces.Services;
@@ -83,7 +84,7 @@ namespace ShoesShop.Controllers
             return Ok(detail);
         }
 
-
+        [Authorize]
         [HttpPut("update-status")]
         public async Task<IActionResult> UpdateOrderStatus([FromBody] UpdateOrderStatusRequest request)
         {

@@ -1,5 +1,6 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using API_ShoesShop.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
@@ -17,17 +18,16 @@ namespace API_ShoesShop.Application.Services
             _userManager = userManager;
         }
 
-        public async Task<string> GenerateToken(ApplicationUser user)
+        public async Task< string > GenerateAccessToken(ApplicationUser user)
         {
             var roles = await _userManager.GetRolesAsync(user);
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Key"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-            var expireTime = DateTime.UtcNow.AddHours(3);
+            var expireTime = DateTime.UtcNow.AddMinutes(1);
             var authClaims = new List<Claim>
             {
                 new Claim("UserId",user.Id),
                 new Claim("Username",user.UserName),
-                new Claim(JwtRegisteredClaimNames.Exp, expireTime.ToString()),
                 new Claim("email_confirm",user.EmailConfirmed.ToString()),
                 new Claim("Email",user.Email),
                 new Claim("Phone",user.PhoneNumber),
@@ -45,7 +45,16 @@ namespace API_ShoesShop.Application.Services
                 expires: expireTime,
                 signingCredentials: creds
                 );
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            string accessToken = new JwtSecurityTokenHandler().WriteToken(token);
+            return accessToken;
+        }
+
+        public async Task <string> GenerateRefreshToken()
+        {
+            var randomNumber = new byte[32];
+            using var rng = RandomNumberGenerator.Create();
+            rng.GetBytes(randomNumber);
+            return Convert.ToBase64String(randomNumber);
         }
     }
 }

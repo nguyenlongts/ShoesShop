@@ -1,5 +1,6 @@
 ﻿using API_ShoesShop.Application.DTOs;
 using Microsoft.AspNetCore.Mvc;
+using ShoesShop.Application.DTOs;
 using ShoesShop.Application.Interfaces.Services;
 
 namespace API_ShoesShop.Controllers
@@ -28,11 +29,26 @@ namespace API_ShoesShop.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDTO model)
         {
-            var (success, token, message) = await _authService.LoginAsync(model);
+            var (success, response, message) = await _authService.LoginAsync(model);
             if (!success)
                 return Unauthorized(new { message });
 
-            return Ok(new { token, message });
+            return Ok(new { response, message });
+        }
+        [HttpPost("refresh")]
+        public async Task<IActionResult> Refresh( RefreshAccessTokenDTO model)
+        {
+            var result = await _authService.RefreshAccessTokenAsync(model.UserId,model.RefreshToken);
+
+            if (!result.isSuccess)
+            {
+                return Unauthorized(result.message);
+            }
+
+            return Ok(new
+            {
+                AccessToken = result.newAccessToken
+            });
         }
 
         [HttpGet("confirm-email")]

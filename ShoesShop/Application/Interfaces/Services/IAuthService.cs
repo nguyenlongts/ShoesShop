@@ -6,7 +6,8 @@ namespace ShoesShop.Application.Interfaces.Services
     public interface IAuthService
     {
         Task<(bool success, string message)> RegisterAsync(RegisterDTO model);
-        Task<(bool success, string token, string message)> LoginAsync(LoginDTO model);
+        Task<(bool success, LoginResponse response, string message)> LoginAsync(LoginDTO model);
         Task<bool> ConfirmEmailAsync(string userId, string token);
+        Task<(string newAccessToken, bool isSuccess, string message)> RefreshAccessTokenAsync(string userId, string refreshToken);
     }
 }
