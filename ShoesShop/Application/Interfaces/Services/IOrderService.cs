@@ -6,7 +6,7 @@ namespace ShoesShop.Application.Interfaces.Services
 {
     public interface IOrderService
     {
-        Task<bool> CreateOrderAsync(Order order);
+        Task<(bool IsSuccess, string Message, Guid? OrderId)> CreateOrderAsync(CreateOrderDto createOrderDto);
 
  
         Task<ResponseDTO<Order>> GetAllOrdersAsync(int pageNum, int pageSize);

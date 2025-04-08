@@ -22,27 +22,9 @@ namespace ShoesShop.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateOrder([FromBody] CreateOrderDto createOrderDto)
         {
-            if (createOrderDto == null || createOrderDto.OrderItems.Count == 0)
-            {
-                return BadRequest("Dữ liệu đơn hàng không hợp lệ.");
-            }
-
-            var order = new Order
-            {
-                UserId = createOrderDto.UserId,
-                ShippingAddress = createOrderDto.ShippingAddress,
-                OrderItems = createOrderDto.OrderItems.Select(item => new OrderItem
-                {
-                    ProductDetailId = item.ProductDetailId,
-                    Quantity = item.Quantity,
-                    UnitPrice = item.PriceAtOrder, 
-                }).ToList(),
-                CreateAt = DateTime.UtcNow
-            };
-
-            var result = await _orderService.CreateOrderAsync(order);
+            var (result,message,OrderId) = await _orderService.CreateOrderAsync(createOrderDto);
             if (!result) return BadRequest("Không thể tạo đơn hàng.");
-            return Ok(order.OrderId);
+            return Ok(OrderId);
         }
 
 

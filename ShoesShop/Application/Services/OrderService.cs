@@ -8,15 +8,48 @@ namespace ShoesShop.Application.Services
     public class OrderService : IOrderService
     {
         private readonly IOrderRepository _orderRepository;
-        public OrderService(IOrderRepository orderRepository)
+
+        private readonly IProductDetailRepository _productDetailRepository;
+        public OrderService(IOrderRepository orderRepository, IProductDetailRepository productDetailRepository)
         {
             _orderRepository = orderRepository;
+            _productDetailRepository = productDetailRepository;
         }
-        public async Task<bool> CreateOrderAsync(Order order)
+        public async Task<(bool IsSuccess, string Message, Guid? OrderId)> CreateOrderAsync(CreateOrderDto createOrderDto)
         {
-          var result = await _orderRepository.CreateOrderAsync(order);
-          return result != null;
+            if (createOrderDto == null || createOrderDto.OrderItems == null || !createOrderDto.OrderItems.Any())
+                return (false, "Dữ liệu đơn hàng không hợp lệ.", null);
+
+            foreach (var item in createOrderDto.OrderItems)
+            {
+                var product = await _productDetailRepository.GetByIdAsync(item.ProductDetailId);
+                if (product == null)
+                    return (false, $"Không tìm thấy sản phẩm với ID {item.ProductDetailId}.", null);
+
+                if (product.StockQuantity < item.Quantity)
+                    return (false, $"Sản phẩm {product.ProductDetailId} không đủ tồn kho.", null);
+
+                product.StockQuantity -= item.Quantity; 
+            }
+
+            var order = new Order
+            {
+                OrderId = Guid.NewGuid(),
+                UserId = createOrderDto.UserId,
+                ShippingAddress = createOrderDto.ShippingAddress,
+                OrderItems = createOrderDto.OrderItems.Select(item => new OrderItem
+                {
+                    ProductDetailId = item.ProductDetailId,
+                    Quantity = item.Quantity,
+                    UnitPrice = item.PriceAtOrder,
+                }).ToList(),
+                CreateAt = DateTime.UtcNow
+            };
+
+            await _orderRepository.CreateOrderAsync(order);
+            return (true, "Tạo đơn hàng thành công", (order.OrderId));
         }
+        
 
         public Task<bool> DeleteOrderAsync(Guid orderId)
         {
