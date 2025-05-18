@@ -1,4 +1,4 @@
-﻿// Application/Services/ProductDetailService.cs
+﻿
 using Microsoft.AspNetCore.Http;
 using ShoesShop.Application.DTOs;
 using ShoesShop.Application.Interfaces.Repositories;

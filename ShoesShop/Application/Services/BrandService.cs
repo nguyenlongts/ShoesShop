@@ -9,10 +9,12 @@ namespace ShoesShop.Application.Services
     public class BrandService : IBrandService
     {
         private readonly IBrandRepository _brandRepository;
+        private readonly ICacheService _cacheService;
 
-        public BrandService(IBrandRepository brandRepository)
+        public BrandService(IBrandRepository brandRepository, ICacheService cacheService)
         {
             _brandRepository = brandRepository;
+            _cacheService = cacheService;
         }
 
         public async Task<bool> CreateBrandAsync(CreateBrandDTO brand)
@@ -29,7 +31,24 @@ namespace ShoesShop.Application.Services
 
         public async Task<ResponseDTO<Brand>> GetAllAsync(int pageSize,int pageNum)
         {
-            return await _brandRepository.GetAllAsync(pageNum, pageSize);
+            string cacheKey = $"brands-{pageNum}-{pageSize}";
+
+            var cachedResponse = await _cacheService.GetCacheAsync<ResponseDTO<Brand>>(cacheKey);
+            if (cachedResponse != null)
+            {
+                return cachedResponse;
+            }
+            var result = await _brandRepository.GetAllAsync(pageNum, pageSize);
+            await _cacheService.SetCacheAsync(cacheKey, result, TimeSpan.FromMinutes(5),TimeSpan.FromHours(1));
+
+            return result;
+            
+        }
+
+        public async Task<bool> UpdateBrandAsync(Brand model)
+        {
+            await _brandRepository.UpdateAsync(model);
+            return true;
         }
 
         Task<bool> IBrandService.UpdateStatusAsync(int brandID)

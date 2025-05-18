@@ -1,4 +1,5 @@
-﻿using ShoesShop.Application.DTOs;
+﻿using Microsoft.Extensions.Caching.Memory;
+using ShoesShop.Application.DTOs;
 using ShoesShop.Application.Interfaces.Repositories;
 using ShoesShop.Application.Interfaces.Services;
 using ShoesShop.Domain.Entities;
@@ -8,18 +9,31 @@ namespace ShoesShop.Application.Services
     public class CartService : ICartService
     {
         private readonly ICartRepository _cartRepository;
-        public CartService(ICartRepository cartRepository)
+        private readonly ICacheService _cache;
+        public CartService(ICartRepository cartRepository, ICacheService cache)
         {
             _cartRepository = cartRepository;
+            _cache = cache;
         }
         public async Task<bool> AddItemAsync(AddToCartRequest request)
         {
-            return await _cartRepository.AddToCartAsync(request.UserId.ToString(), request.ProductDetailId, request.Quantity);
+            var result = await _cartRepository.AddToCartAsync(request.UserId.ToString(), request.ProductDetailId, request.Quantity);
+            if (result)
+            {
+                await _cache.RemoveCacheAsync($"cart-items-{request.UserId}");
+            }
+            return result;
         }
 
         public async Task<bool> ClearCartAsync(string userId)
         {
-            return await _cartRepository.ClearCartAsync(userId);
+            var result = await _cartRepository.ClearCartAsync(userId);
+
+            if (result)
+            {
+                await _cache.RemoveCacheAsync($"cart-items-{userId}");
+            }
+            return result;
         }
 
         public Task<bool> CreateAsync(string userId)
@@ -29,8 +43,15 @@ namespace ShoesShop.Application.Services
 
         public async Task<IEnumerable<CartItemDTO>> GetAllCartItem(string userId)
         {
+            string cacheKey = $"cart-items-{userId}";
+            var cachedResponse = await _cache.GetCacheAsync<IEnumerable<CartItemDTO>>(cacheKey);
+            if (cachedResponse != null)
+            {
+                return cachedResponse;
+            }
             var cart = await _cartRepository.GetCartByUserId(userId);
             var cartItems = await _cartRepository.GetAllCartItem(cart.CartId.ToString());
+            await _cache.SetCacheAsync(cacheKey, cartItems, TimeSpan.FromMinutes(5), TimeSpan.FromHours(1));
             return cartItems;
         }
 
@@ -48,12 +69,22 @@ namespace ShoesShop.Application.Services
 
         public async Task<bool> RemoveItemAsync(string userId, int productDetailId)
         {
-            return await _cartRepository.RemoveFromCartAsync(userId, productDetailId);
+            var result = await _cartRepository.RemoveFromCartAsync(userId, productDetailId);
+            if (result)
+            {
+                await _cache.RemoveCacheAsync($"cart-items-{userId}");
+            }
+            return result;
         }
 
         public async Task<bool> UpdateQuantityAsync(string userId, int cartItemId, int newQuantity)
         {
-            return await _cartRepository.UpdateQuantityAsync(userId.ToString(), cartItemId, newQuantity);
+            var result = await _cartRepository.UpdateQuantityAsync(userId.ToString(), cartItemId, newQuantity);
+            if (result)
+            {
+                await _cache.RemoveCacheAsync($"cart-items-{userId}");
+            }
+            return result;
         }
     }
 }

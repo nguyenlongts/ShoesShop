@@ -9,6 +9,8 @@ using ShoesShop.Application.Interfaces.Services;
 using ShoesShop.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using API_ShoesShop.Infrastructure.DBContext;
+using Microsoft.Extensions.Caching.Memory;
+using System.Diagnostics;
 
 namespace ShoesShop.Application.Services
 {
@@ -20,7 +22,8 @@ namespace ShoesShop.Application.Services
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IConfiguration _config;
         private readonly AppDBContext _context;
-        public UserService(IUserRepository userRepository, ICartService cartService, IEmailService emailService, UserManager<ApplicationUser> userManager, IConfiguration config, AppDBContext context)
+        private readonly ICacheService _cacheService;
+        public UserService(IUserRepository userRepository, ICartService cartService, IEmailService emailService, UserManager<ApplicationUser> userManager, IConfiguration config, AppDBContext context, ICacheService cacheService)
         {
             _userRepository = userRepository;
             _cartService = cartService;
@@ -28,6 +31,7 @@ namespace ShoesShop.Application.Services
             _userManager = userManager;
             _config = config;
             _context = context;
+            _cacheService = cacheService;
         }
 
         public async Task<(bool success, string message)> RegisterAsync(RegisterDTO model)
@@ -83,24 +87,63 @@ namespace ShoesShop.Application.Services
 
         
 
-        Task<ResponseDTO<AdminUserInfoResponse>> IUserService.GetAllAsync(int pageSize, int pageNum)
+        public async Task<ResponseDTO<AdminUserInfoResponse>> GetAllAsync(int pageSize, int pageNum)
         {
-            return _userRepository.GetAllAsync(pageNum, pageSize);
+            string cacheKey = $"users_page_{pageNum}_size_{pageSize}";
+            var cachedResponse = await _cacheService.GetCacheAsync<ResponseDTO<AdminUserInfoResponse>>(cacheKey);
+            if (cachedResponse != null)
+            {
+                return cachedResponse;
+            }
+            var result = await _userRepository.GetAllAsync(pageNum, pageSize);
+            await _cacheService.SetCacheAsync(cacheKey, result, TimeSpan.FromMinutes(5), TimeSpan.FromHours(1));
+            return result;
         }
 
-        Task<UserInfoResponse> IUserService.GetByIdAsync(Guid id)
+        public async Task<UserInfoResponse> GetByIdAsync(Guid id)
         {
-            return _userRepository.GetByIdAsync(id);
+            string cachedKey = $"user_{id}";
+            var cachedUser = await _cacheService.GetCacheAsync<UserInfoResponse>(cachedKey);
+            if (cachedUser != null)
+            {
+                return cachedUser;
+            }
+            var user = await _userRepository.GetByIdAsync(id);
+            await _cacheService.SetCacheAsync(cachedKey, user, TimeSpan.FromMinutes(5), TimeSpan.FromHours(1));
+            return user;
         }
 
-        Task<bool> IUserService.UpdateAsync(ApplicationUser user)
+        public async Task<bool> UpdateAsync(ApplicationUser user)
         {
-            return _userRepository.UpdateAsync(user);
+            var result = await _userRepository.UpdateAsync(user);
+
+            if (result)
+            {
+                await _cacheService.RemoveCacheAsync($"user_{user.Id}");
+                for (int page = 1; page <= 3; page++)
+                {
+                    await _cacheService.RemoveCacheAsync($"users_page_{page}_size_10");
+                }
+            }
+            return result;
         }
 
-        Task<bool> IUserService.UpdateStatusAsync(Guid userID)
+
+        public async Task<bool> UpdateStatusAsync(Guid userID)
         {
-            return _userRepository.UpdateStatusAsync(userID);
+            var result = await _userRepository.UpdateStatusAsync(userID);
+
+            if (result)
+            {
+                await _cacheService.RemoveCacheAsync($"user_{userID}");
+                for (int page = 1; page <= 3; page++)
+                {
+                    await _cacheService.RemoveCacheAsync($"users_page_{page}_size_10");
+                }
+            }
+
+            return result;
         }
+
     }
 }

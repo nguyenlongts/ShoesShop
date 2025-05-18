@@ -12,10 +12,12 @@ namespace ShoesShop.Application.Services
 
         private readonly IGenericRepository<Size> _genericRepository;
         private readonly ISizeRepository _SizeRepository;
-        public SizeService(ISizeRepository SizeRepository, IGenericRepository<Size> genericRepository)
+        private readonly ICacheService _cacheService;
+        public SizeService(ISizeRepository SizeRepository, IGenericRepository<Size> genericRepository, ICacheService cacheService)
         {
             _SizeRepository = SizeRepository;
             _genericRepository = genericRepository;
+            _cacheService = cacheService;
         }
         public async Task<bool> CreateSizeAsync(Size model)
         {
@@ -33,12 +35,26 @@ namespace ShoesShop.Application.Services
 
         public async Task<ResponseDTO<Size>> GetAllSizeAsync(int pageNumber, int pageSize)
         {
-            return await _genericRepository.GetAllAsync(pageNumber,pageSize);
+            string cacheKey = $"sizes-{pageNumber}-{pageSize}";
+            var cachedData = await _cacheService.GetCacheAsync<ResponseDTO<Size>>(cacheKey);
+            if (cachedData != null)
+                return cachedData;
+            var result = await _genericRepository.GetAllAsync(pageNumber, pageSize);
+            await _cacheService.SetCacheAsync(cacheKey, result, TimeSpan.FromMinutes(5), TimeSpan.FromHours(1));
+            return result;
         }
 
         public async Task<Size> GetSizeByNameAsync(string name)
         {
+            string cacheKey = $"size_name_{name}";
+            var cachedData = await _cacheService.GetCacheAsync<Size>(cacheKey);
+            if (cachedData != null)
+                return cachedData;
             var Size = await _SizeRepository.GetByNameAsync(name);
+            if (Size != null)
+            {
+                await _cacheService.SetCacheAsync(cacheKey, Size, TimeSpan.FromMinutes(10), TimeSpan.FromHours(2));
+            }
             return Size;
         }
 

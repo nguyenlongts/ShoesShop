@@ -10,10 +10,13 @@ namespace ShoesShop.Application.Services
         private readonly IOrderRepository _orderRepository;
 
         private readonly IProductDetailRepository _productDetailRepository;
-        public OrderService(IOrderRepository orderRepository, IProductDetailRepository productDetailRepository)
+
+        private readonly ICacheService _cacheService;
+        public OrderService(IOrderRepository orderRepository, IProductDetailRepository productDetailRepository, ICacheService cacheService)
         {
             _orderRepository = orderRepository;
             _productDetailRepository = productDetailRepository;
+            _cacheService = cacheService;
         }
         public async Task<(bool IsSuccess, string Message, Guid? OrderId)> CreateOrderAsync(CreateOrderDto createOrderDto)
         {
@@ -29,7 +32,9 @@ namespace ShoesShop.Application.Services
                 if (product.StockQuantity < item.Quantity)
                     return (false, $"Sản phẩm {product.ProductDetailId} không đủ tồn kho.", null);
 
-                product.StockQuantity -= item.Quantity; 
+                product.StockQuantity -= item.Quantity;
+                await _productDetailRepository.UpdateAsync(product);
+
             }
 
             var order = new Order
@@ -61,9 +66,19 @@ namespace ShoesShop.Application.Services
             return _orderRepository.GetAllOrdersAsync(pageNum, pageSize);
         }
 
-        public Task<Order?> GetOrderByIdAsync(Guid orderId)
+        public async Task<Order> GetOrderByIdAsync(Guid orderId)
         {
-            return _orderRepository.GetOrderByIdAsync(orderId);
+            var cacheKey = $"order_{orderId}";
+            var cached = await _cacheService.GetCacheAsync<Order>(cacheKey);
+            if (cached != null)
+                return cached;
+
+            var order = await _orderRepository.GetOrderByIdAsync(orderId);
+            if (order != null)
+            {
+                await _cacheService.SetCacheAsync(cacheKey, order, TimeSpan.FromMinutes(10), TimeSpan.FromHours(1));
+            }
+            return order;
         }
 
         public Task<ResponseDTO<CustomerOrderResponse>> GetOrdersByUserAsync(string userId, int pageNum, int pageSize)
