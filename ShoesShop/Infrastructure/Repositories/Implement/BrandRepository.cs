@@ -32,7 +32,11 @@ namespace ShoesShop.Infrastructure.Repositories.Implement
 
         public async Task UpdateAsync(Brand brand)
         {
-            _context.Update(brand);
+            var existingBrand = await _context.Brands.FindAsync(brand.BrandID);
+            if (existingBrand == null) return;
+            existingBrand.Name = brand.Name;
+            existingBrand.IsActive = brand.IsActive;
+
             await _context.SaveChangesAsync();
         }
         public async Task<bool> UpdateStatusAsync(int brandId)

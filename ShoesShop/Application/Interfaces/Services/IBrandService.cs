@@ -10,5 +10,6 @@ namespace ShoesShop.Application.Interfaces.Services
         Task<bool> CreateBrandAsync(CreateBrandDTO brand);
 
         Task<bool> UpdateStatusAsync(int brandID);
+        Task<bool> UpdateBrandAsync(Brand model);
     }
 }

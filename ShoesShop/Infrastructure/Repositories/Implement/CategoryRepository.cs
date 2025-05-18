@@ -26,9 +26,13 @@ namespace ShoesShop.Infrastructure.Repositories.Implement
         }
 
 
-        public async Task UpdateAsync(Category Category)
+        public async Task UpdateAsync(Category model)
         {
-            _context.Update(Category);
+            var existingCate = await _context.Categories.FindAsync(model.CateID);
+            if (existingCate == null) return;
+            existingCate.Name = model.Name;
+            existingCate.IsActive = model.IsActive;
+
             await _context.SaveChangesAsync();
         }
         public async Task<bool> UpdateStatusAsync(int CategoryId)

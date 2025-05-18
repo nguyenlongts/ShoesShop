@@ -11,5 +11,7 @@ namespace ShoesShop.Application.Interfaces.Services
         Task<bool> CreateCategoryAsync(CreateCateDTO model);
         Task<Category> GetCategoryByNameAsync(string name);
         Task<bool> UpdateStatusAsync(int CategoryID);
+
+        Task<bool> UpdateCategoryAsync(Category model);
     }
 }
