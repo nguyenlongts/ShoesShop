@@ -7,7 +7,7 @@ using ShoesShop.Application.Services;
 
 namespace ShoesShop.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/users")]
     [ApiController]
     public class UserController : ControllerBase
     {
@@ -16,17 +16,17 @@ namespace ShoesShop.Controllers
         {
             _userService = userService;
         }
-        [HttpGet("GetAll")]
+        [HttpGet]
         public async Task<IActionResult> GetAll(int pageSize = 5,int pageNum = 1) {
             return Ok(await _userService.GetAllAsync(pageSize, pageNum));
         }
-        [HttpGet("UserInfo/{id}")]
-        public async Task<IActionResult> UserInfo(Guid id)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(Guid id)
         {
             return Ok(await _userService.GetByIdAsync(id));
         }
         //[Authorize]
-        [HttpPut("UpdateStatus")]
+        [HttpPut("{id}/status")]
         public async Task<IActionResult> UpdateStatus(Guid id)
         {
             if (id == null)

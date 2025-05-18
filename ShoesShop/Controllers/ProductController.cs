@@ -7,7 +7,7 @@ using ShoesShop.Application.Interfaces.Services;
 
 namespace ShoesShop.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/products")]
     [ApiController]
     public class ProductController : ControllerBase
     {
@@ -19,7 +19,7 @@ namespace ShoesShop.Controllers
         }
 
         //[Authorize]
-        [HttpGet("GetAllAdmin")]
+        [HttpGet("admin")]
         public async Task<IActionResult> GetAllAdmin(int pageSize=5, int pageNum=1) {
             var response = await _productService.GetAllAdminAsync(pageSize, pageNum);
             if (response != null)
@@ -28,7 +28,7 @@ namespace ShoesShop.Controllers
             }
             return BadRequest("Get Failed");
         }
-        [HttpGet("GetCustomerProduct")]
+        [HttpGet("customer")]
         public async Task<IActionResult> GetHomeProduct(int pageSize = 5, int pageNum = 1)
         {
             var response = await _productService.GetProductsCustomerAsync(pageSize, pageNum);
@@ -38,7 +38,7 @@ namespace ShoesShop.Controllers
             }
             return BadRequest("Get Failed");
         }
-        [HttpGet("GetByID")]
+        [HttpGet("{id}")]
         public async Task<IActionResult> GetByID(int id)
         {
             var response = await _productService.GetProductByIdAsync(id);
@@ -49,7 +49,7 @@ namespace ShoesShop.Controllers
             return BadRequest("Get Failed");
         }
         [Authorize]
-        [HttpPost("Create")]
+        [HttpPost]
         public async Task<IActionResult> Create(CreateProductDTO model) {
             var result = await _productService.CreateAsync(model);
             if (result)
@@ -58,7 +58,7 @@ namespace ShoesShop.Controllers
             }
             return BadRequest("Create failed");
         }
-        [HttpPost("Filter")]
+        [HttpPost("filter")]
         public async Task<IActionResult> FilterProducts([FromBody] ProductFilterRequest filter)
         {
             var result = await _productService.FilterProducts(

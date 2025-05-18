@@ -3,12 +3,13 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ShoesShop.Application.DTOs;
 using ShoesShop.Application.Interfaces.Services;
+using ShoesShop.Application.Services;
 using ShoesShop.Domain.Entities;
 
 namespace ShoesShop.Controllers
 {
     
-    [Route("api/[controller]")]
+    [Route("api/brands")]
     [ApiController]
     public class BrandController : ControllerBase
     {
@@ -18,25 +19,24 @@ namespace ShoesShop.Controllers
             _brandService = brandService;
         }
 
-        [HttpGet("GetAll")]
+        [HttpGet()]
         public async Task<IActionResult> GetAll(int pageSize = 10,int pageNum = 1)
         {
             return Ok(await _brandService.GetAllAsync(pageSize,pageNum));
         }
         [Authorize]
-        [HttpPost("Create")]
+        [HttpPost()]
         public async Task<IActionResult> Create(CreateBrandDTO brand)
         {
             var result = await _brandService.CreateBrandAsync(brand);
             if (result)
             {
-                return Ok("Create brand " + brand.Name +" successfully" );
+                return Ok(new { message = $"Tạo thương hiệu {brand.Name} thành công" });
             }
-            return BadRequest("Create failed");
-
+            return BadRequest(new { message = "Tạo thương hiệu thất bại" });
         }
         [Authorize]
-        [HttpPut("UpdateStatus")]
+        [HttpPut("{id}/status")]
         public async Task<IActionResult> UpdateStatus(int id)
         {
             if (id == null)
@@ -51,6 +51,19 @@ namespace ShoesShop.Controllers
             }
 
             return Ok(new { message = "Cập nhật trạng thái thành công" });
+        }
+
+        [Authorize]
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(int id,[FromBody]Brand model)
+        {
+            model.BrandID = id;
+            var result = await _brandService.UpdateBrandAsync(model);
+            if (result)
+            {
+                return Ok(new { message = "Cập nhật thương hiệu thành công" });
+            }
+            return BadRequest(new { message = "Cập nhật thương hiệu thất bại" });
         }
     }
 }

@@ -7,7 +7,7 @@ using ShoesShop.Domain.Entities;
 namespace ShoesShop.Controllers
 {
     
-    [Route("api/[controller]")]
+    [Route("api/sizes")]
     [ApiController]
     public class SizeController : ControllerBase
     {
@@ -16,7 +16,7 @@ namespace ShoesShop.Controllers
         {
             _SizeService = SizeService;
         }
-        [HttpGet("GetAll")]
+        [HttpGet]
         public async Task<IActionResult> GetAllAsync(int pageNumber=1,int pageSize=5)
         {
             var result = await _SizeService.GetAllSizeAsync(pageNumber, pageSize);
@@ -33,18 +33,18 @@ namespace ShoesShop.Controllers
             return Ok("Add Size successfully");
         }
         //[authorize]
-        [HttpGet("GetByName")]        
+        [HttpGet("search")]
         public async Task<IActionResult> GetSizeByNameAsync(string name)
         {
             var result = await _SizeService.GetSizeByNameAsync(name);
-            if (result == null)
+            if (result != null)
             {
-                return Ok();
+                return Ok(result);
             }
-            return BadRequest("Existed!");
+            return BadRequest("Not Existed!");
         }
         ////[authorize]
-        [HttpPut("Update")]
+        [HttpPut]
         public async Task<IActionResult> Update(Size model)
         {
             var result =await _SizeService.UpdateSizeAsync(model);
@@ -55,7 +55,7 @@ namespace ShoesShop.Controllers
             return BadRequest("Update failed");
         }
         //[authorize]
-        [HttpPost("ChangeStatus")]
+        [HttpPut("{id}/status")]
         public async Task<IActionResult> ChangeStatus(int id)
         {
             var result = await _SizeService.UpdateStatusAsync(id);
@@ -64,12 +64,10 @@ namespace ShoesShop.Controllers
             {
                 return NotFound("Size not found");
             }
-
-            // Nếu update thành công
             return Ok("Size status updated successfully");
         }
         //[authorize]
-        [HttpDelete("Delete")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
             var result = await _SizeService.DeleteSizeAsync(id);

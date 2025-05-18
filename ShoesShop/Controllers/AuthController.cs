@@ -56,9 +56,9 @@ namespace API_ShoesShop.Controllers
         {
             var success = await _authService.ConfirmEmailAsync(userId, token);
             if (!success)
-                return BadRequest("Email confirmation failed.");
+                return BadRequest("Xác nhận email thất bại.");
 
-            return Ok("Email confirmed successfully!");
+            return Ok("Xác nhận email thành công!");
         }
     }
 }

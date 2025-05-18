@@ -7,7 +7,7 @@ using ShoesShop.Domain.Entities;
 
 namespace ShoesShop.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/cart")]
     [ApiController]
     public class CartController : ControllerBase
     {
@@ -26,7 +26,7 @@ namespace ShoesShop.Controllers
             return Ok("Thêm thất bại");
         }
 
-        [HttpGet("GetCartById/{id}")]
+        [HttpGet("{id}")]
         public async Task<IActionResult> GetByUserId(string id)
         {
             var cart =await _cartService.GetByUserIdAsync(id);
@@ -36,18 +36,18 @@ namespace ShoesShop.Controllers
             }
             return Ok(cart);
         }
-        [HttpGet("GetAllCartItems")]
+        [HttpGet("{userId}/items")]
         public async Task<IActionResult> GetAllCartItems(string userId)
         {
             return Ok(await _cartService.GetAllCartItem(userId));
         }
-        [HttpPost("UpdateQuantity/{cartItemId}")]
+        [HttpPut("items/{cartItemId}")]
         public async Task<IActionResult> UpdateQuantity ([FromBody]UpdateCIRequest request)
         {
             return Ok(await _cartService.UpdateQuantityAsync(request.UserId, request.CartItemId, request.Quantity));
         }
 
-        [HttpDelete("RemoveItem")]
+        [HttpDelete("items")]
         public async Task<IActionResult> RemoveItem([FromBody] RemoveCIRequest request)
         {
             var result = await _cartService.RemoveItemAsync(request.UserId, request.ProductDetailId);
@@ -58,7 +58,7 @@ namespace ShoesShop.Controllers
             return BadRequest("Xóa sản phẩm khỏi giỏ hàng thất bại");
         }
 
-        [HttpDelete("ClearCart/{userId}")]
+        [HttpDelete("{userId}/clear")]
         public async Task<IActionResult> ClearCart(string userId)
         {
             var result = await _cartService.ClearCartAsync(userId);

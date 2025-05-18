@@ -9,7 +9,7 @@ using ShoesShop.Domain.Entities;
 
 namespace ShoesShop.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/products")]
     [ApiController]
     public class ProductDetailController : ControllerBase
     {
@@ -20,7 +20,7 @@ namespace ShoesShop.Controllers
             _productDetailService = productDetailService;
         }
 
-        [HttpGet("{productId}/details")]
+        [HttpGet("{productId}/variants")]
         public async Task<IActionResult> GetProductDetails(int productId)
         {
             var result = await _productDetailService.GetByProductIdAsync(productId);
@@ -28,14 +28,14 @@ namespace ShoesShop.Controllers
             return Ok(result);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("variants/{id}")]
         public async Task<IActionResult> GetVariantById(int id)
         {
             var productDetail = await _productDetailService.GetByIdAsync(id);
             return productDetail != null ? Ok(productDetail) : NotFound("Không tìm thấy biến thể.");
         }
 
-        [HttpPost]
+        [HttpPost("variants")]
         public async Task<IActionResult> CreateProductDetail([FromForm] CreateProductDetailDTO model)
         {
             if (!ModelState.IsValid)

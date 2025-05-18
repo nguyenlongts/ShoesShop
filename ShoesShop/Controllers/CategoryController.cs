@@ -8,7 +8,7 @@ using ShoesShop.Domain.Entities;
 
 namespace ShoesShop.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/categories")]
     [ApiController]
     public class CategoryController : ControllerBase
     {
@@ -18,33 +18,33 @@ namespace ShoesShop.Controllers
             _CategoryService = CategoryService;
         }
 
-        [HttpGet("GetAll")]
+        [HttpGet()]
         public async Task<IActionResult> GetAll(int pageSize = 10,int pageNum = 1)
         {
             return Ok(await _CategoryService.GetAllAsync(pageSize,pageNum));
         }
         [Authorize]
-        [HttpPost("Create")]
+        [HttpPost()]
         public async Task<IActionResult> Create(CreateCateDTO Category)
         {
             var result = await _CategoryService.CreateCategoryAsync(Category);
             if (result)
             {
-                return Ok("Create Category " + Category.Name +" successfully" );
+                return Ok("Tạo Category " + Category.Name +" thành công" );
             }
-            return BadRequest("Create failed");
+            return BadRequest("Tạo thất bại");
 
         }
 
         [Authorize]
-        [HttpGet("GetByName")]
+        [HttpGet("filter/name/{name}")]
         public async Task<Category> GetCategoryByNameAsync(string name)
         {
             return await _CategoryService.GetCategoryByNameAsync(name);
         }
 
         [Authorize]
-        [HttpPut("UpdateStatus")]
+        [HttpPut("{id}/status")]
         public async Task<IActionResult> UpdateStatus(int id)
         {
             if (id == null)
@@ -59,6 +59,17 @@ namespace ShoesShop.Controllers
             }
 
             return Ok(new { message = "Cập nhật trạng thái thành công" });
+        }
+        [Authorize]
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(Category model)
+        {
+            var result = await _CategoryService.UpdateCategoryAsync(model);
+            if (result == true)
+            {
+                return Ok("Cập nhật thành công");
+            }
+            return BadRequest("Cập nhật thất bại");
         }
     }
 }

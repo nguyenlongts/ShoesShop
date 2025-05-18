@@ -67,7 +67,7 @@ namespace ShoesShop.Controllers
         }
 
         [Authorize]
-        [HttpPut("update-status")]
+        [HttpPut("{orderId}/status")]
         public async Task<IActionResult> UpdateOrderStatus([FromBody] UpdateOrderStatusRequest request)
         {
             var result = await _orderService.UpdateOrderStatusAsync(request.OrderId, ((Order.OrderStatus)request.Status));
@@ -91,12 +91,7 @@ namespace ShoesShop.Controllers
         }
 
 
-        //[HttpGet("status/{status}")]
-        //public async Task<IActionResult> GetOrdersByStatus(OrderStatus status, [FromQuery] int pageNum = 1, [FromQuery] int pageSize = 10)
-        //{
-        //    var orders = await _orderService.GetOrdersByStatusAsync(status, pageNum, pageSize);
-        //    return Ok(orders);
-        //}
+        
     }
 
 }

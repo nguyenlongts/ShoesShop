@@ -6,8 +6,8 @@ using ShoesShop.Domain.Entities;
 
 namespace ShoesShop.Controllers
 {
-    
-    [Route("api/[controller]")]
+
+    [Route("api/colors")]
     [ApiController]
     public class ColorController : ControllerBase
     {
@@ -16,8 +16,8 @@ namespace ShoesShop.Controllers
         {
             _colorService = colorService;
         }
-        [HttpGet("GetAll")]
-        public async Task<IActionResult> GetAllAsync(int pageNumber=1,int pageSize=5)
+        [HttpGet()]
+        public async Task<IActionResult> GetAllAsync(int pageNumber = 1, int pageSize = 5)
         {
             var result = await _colorService.GetAllColorsAsync(pageNumber, pageSize);
             return Ok(result);
@@ -28,51 +28,50 @@ namespace ShoesShop.Controllers
         {
             var result = await _colorService.CreateColorAsync(model);
             if (result == false) {
-                return BadRequest("Add failed");
+                return BadRequest("Tạo thất bại");
             }
-            return Ok("Add color successfully");
+            return Ok("Tạo màu thành công");
         }
         [Authorize]
-        [HttpGet("GetByName")]        
+        [HttpGet("filter/name/{name}")]
         public async Task<Color> GetColorByNameAsync(string name)
         {
             return await _colorService.GetColorByNameAsync(name);
         }
-        [Authorize]
-        [HttpPut("Update")]
+ 
+        [HttpPut("{id}")]
         public async Task<IActionResult> Update(Color model)
         {
             var result =await _colorService.UpdateColorAsync(model);
             if (result == true)
             {
-                return Ok("Update color successfully");
+                return Ok("Cập nhật màu thành công");
             }
-            return BadRequest("Update failed");
+            return BadRequest("Cập nhật màu thất bại");
         }
         [Authorize]
-        [HttpPost("ChangeStatus")]
+        [HttpPut("{id}/status")]
         public async Task<IActionResult> ChangeStatus(int id)
         {
             var result = await _colorService.UpdateStatusAsync(id);
 
             if (!result)
             {
-                return NotFound("Color not found");
+                return NotFound();
             }
 
-            // Nếu update thành công
-            return Ok("Color status updated successfully");
+            return Ok("Cập nhật màu thành công");
         }
         [Authorize]
-        [HttpDelete("Delete")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
             var result = await _colorService.DeleteColorAsync(id);
             if(result == true)
             {
-                return Ok("Delete Successfully");
+                return Ok("Xoá màu thành công");
             }
-            return BadRequest("Delete Failed");
+            return BadRequest("Xoá thất bại");
         }
     }
     
