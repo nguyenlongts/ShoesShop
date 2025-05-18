@@ -12,5 +12,6 @@ namespace ShoesShop.Application.Interfaces.Repositories
         Task AddAsync(ProductDetail productDetail);
         Task<bool> ExistsAsync(int productId, int colorId, int sizeId);
         Task SaveChangesAsync();
+        Task UpdateAsync(ProductDetail productDetail);
     }
 }

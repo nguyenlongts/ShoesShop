@@ -56,7 +56,11 @@ public class ProductDetailRepository : IProductDetailRepository
         return await _context.ProductDetails
             .AnyAsync(pd => pd.ProductId == productId && pd.ColorId == colorId && pd.SizeId == sizeId);
     }
-
+    public async Task UpdateAsync(ProductDetail productDetail)
+    {
+        _context.ProductDetails.Update(productDetail);
+        await _context.SaveChangesAsync();
+    }
     public async Task SaveChangesAsync()
     {
         await _context.SaveChangesAsync();
