@@ -11,7 +11,7 @@ namespace ShoesShop.Application.Interfaces.Services
  
         Task<ResponseDTO<Order>> GetAllOrdersAsync(int pageNum, int pageSize);
 
-        Task<Order?> GetOrderByIdAsync(Guid orderId);
+        Task<Order> GetOrderByIdAsync(Guid orderId);
 
         Task<bool> UpdateOrderStatusAsync(Guid orderId, OrderStatus newStatus);
 

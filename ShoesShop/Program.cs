@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -14,10 +15,12 @@ using ShoesShop.Application.Interfaces.Services;
 using ShoesShop.Application.Services;
 using ShoesShop.Domain.Entities;
 using ShoesShop.Infrastructure.Repositories.Implement;
+using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddMemoryCache();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -47,7 +50,24 @@ builder.Services.AddSwaggerGen(options =>
         }
     });
 });
+
+var redisConfigurationOptions = new ConfigurationOptions
+{
+    EndPoints = { { "redis-10479.c124.us-central1-1.gce.redns.redis-cloud.com", 10479 } },
+    User = "default",
+    Password = "vpjvut79UWpyHit7a978LDcOeqnLBJQw",
+    AbortOnConnectFail = false
+}; 
+builder.Services.AddStackExchangeRedisCache(options =>
+{
+    options.ConfigurationOptions = redisConfigurationOptions;
+    options.InstanceName = "ShoesShop_"; // Tiền tố cho các key trong Redis
+});
+
+
 builder.Services.AddScoped<IEmailService, MailService>();
+builder.Services.AddScoped<IProductDetailRepository, ProductDetailRepository>();
+builder.Services.AddScoped<IProductDetailService, ProductDetailService>();
 builder.Services.AddScoped<IGenericRepository<Color>, GenericRepository<Color>>();
 builder.Services.AddScoped<IColorRepository, ColorRepository>();
 builder.Services.AddScoped<ICartRepository, CartRepository>();
@@ -70,7 +90,7 @@ builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IUserService, UserService>();
-
+builder.Services.AddScoped<ICacheService, CacheService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 
 builder.Services.AddDbContext<AppDBContext>(options =>
@@ -91,7 +111,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowAll",
         policy =>
         {
-            policy.AllowAnyOrigin()  
+            policy.AllowAnyOrigin()
                   .AllowAnyMethod()
                   .AllowAnyHeader();
         });
@@ -105,6 +125,8 @@ builder.Services.AddAuthentication(options =>
 {
     options.TokenValidationParameters = new TokenValidationParameters
     {
+        ClockSkew = TimeSpan.Zero,
+        ValidateLifetime = true,
         ValidIssuer = builder.Configuration["JWT:Issuer"],
         ValidAudience = builder.Configuration["JWT:Audience"],
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"]))
