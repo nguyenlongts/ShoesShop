@@ -78,7 +78,7 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IProductDetailRepository, ProductDetailRepository>();
 
 builder.Services.AddDbContext<AppDBContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("ConnectString")));
+    options.UseMySql(builder.Configuration.GetConnectionString("ConnectString"), new MySqlServerVersion(new Version(8, 0, 0))));
 builder.Services.AddScoped<TokenService>();
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 {
